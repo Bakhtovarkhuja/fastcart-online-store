@@ -1,28 +1,30 @@
 import SearchIcon from '@mui/icons-material/Search'
-import Slider from 'react-slick'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
-import img from '../../assets/wishlist.svg'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import starIcon from '../../assets/Five star.svg'
 import info from '../../assets/info.svg'
 import { Link } from 'react-router'
 import heart from '../../assets/heart small.svg'
 import Accordion from '@mui/material/Accordion'
-import AccordionActions from '@mui/material/AccordionActions'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Button from '@mui/material/Button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import five from '../../assets/Five star.svg'
 import four from '../../assets/rating4.svg'
 import tree from '../../assets/rating3.svg'
 import two from '../../assets/rating copy.svg'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import { getProduct } from '../../store/product/reducer'
+import { useDispatch, useSelector } from 'react-redux'
+import api from '../../utils/utils'
 
 export default function Kategoria() {
+		const dispatch = useDispatch()
+	const {product} = useSelector(state => state.product)
 	const [value, setValue] = useState([0, 1000])
 
   const handleRangeChange = (index, val) => {
@@ -41,31 +43,13 @@ export default function Kategoria() {
 		setValue(newVal)
 	}
 
-	const wishlistItems = [
-		{ id: 1, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 2, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 3, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 4, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 5, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 6, title: 'Gucci duffle bag', price: '$960' },
-		{ id: 7, title: 'Gucci duffle bag', price: '$960' },
-	]
-
-	const settings = {
-		dots: false,
-		infinite: false,
-		speed: 500,
-		slidesToShow: 1,
-		slidesToScroll: 1,
-		responsive: [
-			{ breakpoint: 768, settings: { slidesToShow: 1 } },
-			{ breakpoint: 1024, settings: { slidesToShow: 3 } },
-			{ breakpoint: 1280, settings: { slidesToShow: 3 } },
-			{ breakpoint: 1580, settings: { slidesToShow: 3 } },
-		],
-	}
+	useEffect(() => {
+			dispatch(getProduct())
+		},[])
 
 	return (
+		
+
 		<>
 			<div className='w-[90%] m-auto md:w-[80%] py-[30px] md:pt-[60px] flex justify-between items-center'>
 				<p className='text-[gray]'>
@@ -389,16 +373,30 @@ export default function Kategoria() {
 					</div>
 				</aside>
 				<aside className='flex flex-col gap-[40px] md:w-[80%]'>
-					<Slider {...settings}>
-						{wishlistItems.map(item => (
-							<div key={item.id} className='px-2'>
+					<div className="w-full px-4">
+					<Swiper
+						spaceBetween={10}
+						slidesPerView={1}
+						breakpoints={{
+							768: {
+								slidesPerView: 3, 
+								spaceBetween: 20,
+							},
+						}}
+					>
+						{product?.map(el => (
+							<SwiperSlide key={el.id}>
 								<div className='flex flex-col gap-[10px]'>
 									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img src={img} alt='' />
+										<img
+											src={api + 'images/' + el.image}
+											alt=''
+											className='md:h-[180px]'
+										/>
 										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
 											<img src={heart} className='' alt='' />
 										</div>
-										<Link to={'/product'}>
+										<Link to={`/product/${el.id}`}>
 											<img
 												src={info}
 												className='absolute top-[50px] right-[10px]'
@@ -409,94 +407,16 @@ export default function Kategoria() {
 											<ShoppingCartIcon /> Add To Cart
 										</button>
 									</div>
-									<b className='text-[23px]'>{item.title}</b>
-									<p className='text-[#DB4444] text-[20px]'>{item.price}</p>
+									<b className='text-[23px]'>{el.productName}</b>
+									<p className='text-[#DB4444] text-[20px]'>
+										{'$ ' + el.price}
+									</p>
 									<img className='w-[30%]' src={starIcon} alt='' />
 								</div>
-							</div>
+							</SwiperSlide>
 						))}
-					</Slider>
-					<Slider {...settings}>
-						{wishlistItems.map(item => (
-							<div key={item.id} className='px-2'>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img src={img} alt='' />
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={'/product'}>
-											<img
-												src={info}
-												className='absolute top-[50px] right-[10px]'
-												alt=''
-											/>
-										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
-									</div>
-									<b className='text-[23px]'>{item.title}</b>
-									<p className='text-[#DB4444] text-[20px]'>{item.price}</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</div>
-						))}
-					</Slider>
-					<Slider {...settings}>
-						{wishlistItems.map(item => (
-							<div key={item.id} className='px-2'>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img src={img} alt='' />
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={'/product'}>
-											<img
-												src={info}
-												className='absolute top-[50px] right-[10px]'
-												alt=''
-											/>
-										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
-									</div>
-									<b className='text-[23px]'>{item.title}</b>
-									<p className='text-[#DB4444] text-[20px]'>{item.price}</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</div>
-						))}
-					</Slider>
-					<Slider {...settings}>
-						{wishlistItems.map(item => (
-							<div key={item.id} className='px-2'>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img src={img} alt='' />
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={'/product'}>
-											<img
-												src={info}
-												className='absolute top-[50px] right-[10px]'
-												alt=''
-											/>
-										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
-									</div>
-									<b className='text-[23px]'>{item.title}</b>
-									<p className='text-[#DB4444] text-[20px]'>{item.price}</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</div>
-						))}
-					</Slider>
+					</Swiper>
+					</div>
 					<div className='flex justify-center mt-[20px]'>
 						<button className='px-[25px] bg-[#DB4444] py-[10px] rounded-[7px] text-[white]'>
 							All Products

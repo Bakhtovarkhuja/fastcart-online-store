@@ -1,8 +1,26 @@
+import axios from 'axios'
 import { useState } from 'react'
+import api from '../../utils/utils'
+import { useNavigate } from 'react-router'
 
 export default function LogIn() {
+	const navigate  =useNavigate()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState(null)
+
+	async function  handleCreateAccount() {
+		const user = {
+			userName: email,
+			password: password
+		}
+		try {
+			const { data } = await axios.post(api + 'Account/login', user)
+			localStorage.setItem('token', data.data)
+			navigate('/')
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
 	return (
 		<>
@@ -12,8 +30,8 @@ export default function LogIn() {
 					<p className='mt-[-10px] md:text-[20px] text-[18px]'>Enter your details below</p>
 					<input
 						className='outline-0 border-1 border-[gray] py-[7px] px-[15px] rounded-[7px]'
-						type='email'
-						placeholder='Email'
+						type='text'
+						placeholder='Name'
 						value={email}
 						onChange={e => setEmail(e.target.value)}
 					/>
@@ -22,12 +40,12 @@ export default function LogIn() {
 						type='password'
 						placeholder='Password'
 						value={password}
-						onChage={e => setPassword(e.target.value)}
+						onChange={e => setPassword(e.target.value)}
 					/>
 					<button className='text-center text-[#DB4444]'>
 						Forget Password?
 					</button>
-					<button className='bg-[#DB4444] rounded-[7px] text-[white] py-[10px]'>
+					<button className='bg-[#DB4444] rounded-[7px] text-[white] py-[10px]' onClick={handleCreateAccount}>
 						Create Account
 					</button>
 				</div>

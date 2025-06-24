@@ -192,6 +192,7 @@ export default function ProductPage() {
 										</div>
 										<Link to={`/product/${el.id}`}>
 											<img
+											   onClick={getInfo()}
 												src={info}
 												className='absolute top-[50px] right-[10px]'
 												alt=''

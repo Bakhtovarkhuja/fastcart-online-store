@@ -23,6 +23,7 @@ import { useEffect } from 'react'
 import { get } from '../../store/categoria/reducer'
 import api from '../../utils/utils'
 import { getProduct } from '../../store/product/reducer'
+import { AddCart } from '../../store/cart/reducer'
 
 export default function Home() {
 	const dispatch = useDispatch()
@@ -132,7 +133,7 @@ export default function Home() {
 												alt=''
 											/>
 										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
+										<button onClick={() => dispatch(AddCart(el.id))}  className='bg-black text-white w-full py-[10px]'>
 											<ShoppingCartIcon /> Add To Cart
 										</button>
 									</div>
@@ -226,7 +227,7 @@ export default function Home() {
 												alt=''
 											/>
 										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
+										<button onClick={() => dispatch(AddCart(el.id))} className='bg-black text-white w-full py-[10px]'>
 											<ShoppingCartIcon /> Add To Cart
 										</button>
 									</div>
