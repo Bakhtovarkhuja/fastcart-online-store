@@ -8,8 +8,10 @@ import { useEffect, useRef, useState } from 'react'
 import FilterFramesIcon from '@mui/icons-material/FilterFrames'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Link } from 'react-router'
+import { useSelector } from 'react-redux'
 
 export default function Header() {
+	const { cart } = useSelector(state => state.cart)
 	const [modal, setModal] = useState(false)
 	const [modalMenu, setModalMenu] = useState(false)
 	const modalRef = useRef(null)
@@ -33,6 +35,11 @@ export default function Header() {
 			document.removeEventListener('click', handleClickOutside)
 		}
 	}, [modal, modalMenu])
+
+	function handleDelLocalStorege(){
+		localStorage.removeItem('token')
+		localStorage.removeItem('userInfo')
+	}
 
 	return (
 		<div className='flex items-center justify-between py-[20px] md:px-[10%] px-[5%] shadow-lg relative'>
@@ -73,11 +80,15 @@ export default function Header() {
 				<Link to={'/wishlist'}>
 					<FavoriteBorderIcon />
 				</Link>
-				<div className='hidden md:block'>
-
-				<Link to={'/cart'}>
-					<ShoppingCartIcon />
-				</Link>
+				<div className='hidden md:block relative'>
+					{cart[0]?.totalProducts > 0 && (
+						<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>
+							{cart[0]?.totalProducts}
+						</div>
+					)}
+					<Link to={'/cart'}>
+						<ShoppingCartIcon />
+					</Link>
 				</div>
 				<PersonIcon
 					onClick={e => {
@@ -105,7 +116,7 @@ export default function Header() {
 							<span>My Orders</span>
 						</Link>
 					</div>
-					<div className='flex items-center gap-2'>
+					<div className='flex items-center gap-2' onClick={() => handleDelLocalStorege()}>
 						<Link to={'/registration'}>
 							<LogoutIcon />
 							<span>Logout</span>

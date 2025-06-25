@@ -1,4 +1,7 @@
 export default function MyAccount() {
+	const user = JSON.parse(localStorage.getItem('userInfo'))
+	
+
 	return (
 		<>
 			<section className='w-[90%] md:w-[80%] flex flex-col gap-[20px] m-auto py-[30px] md:py-[60px] md:gap-[30px] md:pb-[220px]'>
@@ -30,16 +33,19 @@ export default function MyAccount() {
 										<input
 											type='text'
 											className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px]'
+											value={user?.userName}
 										/>
 										<input
 											type='email'
 											className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px]'
+											value={user?.email}
 										/>
 									</div>
 									<div className='flex flex-col gap-[10px] md:w-[100%]'>
 										<input
-											type='text'
+											type='number'
 											className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px]'
+											value={user?.phoneNumber}
 										/>
 										<input
 											type='email'
@@ -50,7 +56,7 @@ export default function MyAccount() {
 							</div>
 							<div className='flex flex-col gap-[10px] mt-[20px]'>
 								<b className='text-[28px]'>Password Changes</b>
-								<input type='text' className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px]' placeholder='Current passwod'/>
+								<input type='password' className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px]' placeholder='Current passwod' value={user?.password}/>
 								<div className='flex flex-col gap-[10px] md:flex-row'>
 									<input type='text' className='border-1 border-[gray] rounded-[7px] px-[15px] md:w-[100%] py-[7px]' placeholder='New passwod'/>
 									<input type='text' className='border-1 border-[gray] rounded-[7px] px-[15px] py-[7px] md:w-[100%]' placeholder='Confirm new passwod'/>

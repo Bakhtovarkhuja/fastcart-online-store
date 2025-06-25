@@ -20,12 +20,16 @@ export const getCart = createAsyncThunk('CartSlice/getCart',
 export const AddCart = createAsyncThunk('CartSlice/AddCart', 
 	async (id, {dispatch}) => {
 		try {
-			await axios.post(api + 'Cart/add-product-to-cart?id=' + id, {}, {
+			const { data } = await axios.post(api + 'Cart/add-product-to-cart?id=' + id, {}, {
 				headers: {
 				"Authorization": `Bearer ${localStorage.getItem('token')}`
 				}
 			})
+			console.log(data.status);
+			console.log(data.data);
 			dispatch(getCart())
+			return data.status
+			
 		} catch (error) {
 			console.error(error);
 		}
@@ -64,13 +68,20 @@ export const removeCart = createAsyncThunk('CartSlice/removeCart',
 export const CartSlice = createSlice({
 	name: "CartSlice",
 	initialState: {
-		cart: []
+		cart: [],
+		error: null
 	},
 	reducers: {},
 	extraReducers: builder => {
 		builder
 		.addCase(getCart.fulfilled, (state, action) => {
 			state.cart = action.payload
+		})
+		.addCase(AddCart.rejected, (state, action) => {
+			state.error = action.payload
+		})
+		.addCase(AddCart.fulfilled, (state, action) => {
+			state.error = null
 		})
 	}
 })

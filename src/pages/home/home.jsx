@@ -6,7 +6,7 @@ import img from '../../assets/wishlist.svg'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import starIcon from '../../assets/Five star (1).svg'
 import info from '../../assets/info.svg'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import heart from '../../assets/heart small.svg'
 import jbl from '../../assets/jbl.svg'
 import ps5 from '../../assets/ps5.svg'
@@ -24,19 +24,42 @@ import { get } from '../../store/categoria/reducer'
 import api from '../../utils/utils'
 import { getProduct } from '../../store/product/reducer'
 import { AddCart } from '../../store/cart/reducer'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+
 
 export default function Home() {
 	const dispatch = useDispatch()
 	const { data } = useSelector(state => state.categoria)
 	const { product } = useSelector(state => state.product)
+	const { error } = useSelector(state => state.cart)
+	console.log(error);
+	
 
 	useEffect(() => {
 		dispatch(get())
 		dispatch(getProduct())
 	}, [])
 
+	useEffect(() => {
+		if (error === 401) {
+		toast.error('С перво зарегистрировайся!', {
+			position: 'top-center',
+			autoClose: 5000,
+			hideProgressBar: false,
+			closeOnClick: false,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			theme: 'light',
+		})
+	}
+	},[error])
+
 	return (
 		<>
+		<ToastContainer/>
 			<section className=' py-[30px] md:py-[60px] md:w-[80%] md:m-auto'>
 				<div className='flex flex-col gap-[20px] md:flex-row '>
 					<div className=' border-1 border-[gray] w-[90%] m-auto py-[10px] px-[15px] rounded-[7px] md:hidden'>
@@ -104,48 +127,51 @@ export default function Home() {
 						<img src={clock} alt='' />
 					</div>
 					<div className='w-full'>
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={1}
-						breakpoints={{
-							768: {
-								slidesPerView: 4, 
-								spaceBetween: 20,
-							},
-						}}
-					>
-						{product?.map(el => (
-							<SwiperSlide key={el.id} className='px-2'>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img
-											src={api + 'images/' + el.image}
-											alt=''
-											className='md:h-[180px]'
-										/>
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={`/product/${el.id}`}>
-											<img 
-												src={info}
-												className='absolute top-[50px] right-[10px]'
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={1}
+							breakpoints={{
+								768: {
+									slidesPerView: 4,
+									spaceBetween: 20,
+								},
+							}}
+						>
+							{product?.map(el => (
+								<SwiperSlide key={el.id} className='px-2'>
+									<div className='flex flex-col gap-[10px]'>
+										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
+											<img
+												src={api + 'images/' + el.image}
 												alt=''
+												className='md:h-[180px]'
 											/>
-										</Link>
-										<button onClick={() => dispatch(AddCart(el.id))}  className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
+											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
+												<img src={heart} className='' alt='' />
+											</div>
+											<Link to={`/product/${el.id}`}>
+												<img
+													src={info}
+													className='absolute top-[50px] right-[10px]'
+													alt=''
+												/>
+											</Link>
+											<button
+												onClick={() => dispatch(AddCart(el.id))}
+												className='bg-black text-white w-full py-[10px]'
+											>
+												<ShoppingCartIcon /> Add To Cart
+											</button>
+										</div>
+										<b className='text-[23px]'>{el.productName}</b>
+										<p className='text-[#DB4444] text-[20px]'>
+											{'$ ' + el.price}
+										</p>
+										<img className='w-[30%]' src={starIcon} alt='' />
 									</div>
-									<b className='text-[23px]'>{el.productName}</b>
-									<p className='text-[#DB4444] text-[20px]'>
-										{'$ ' + el.price}
-									</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</SwiperSlide>
-						))}
-					</Swiper>
+								</SwiperSlide>
+							))}
+						</Swiper>
 					</div>
 					<Link to={'/kategoria'}>
 						<button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-[white]'>
@@ -157,33 +183,30 @@ export default function Home() {
 						<b className='text-[#DB4444] text-[25px]'>Categories</b>
 					</div>
 					<b className='text-[30px]'>Browse By Category</b>
-					<div className="w-full">
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={2}
-						breakpoints={{
-							768: {
-								slidesPerView: 6, 
-								spaceBetween: 20,
-							},
-						}}
-					>
-						{data?.map(el => (
-							<SwiperSlide key={el.id}>
-							<div
-								className=' border-1 text-center border-[gray] rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-[white]'
-								
-							>
-								<img
-									src={api + 'images/' + el.categoryImage}
-									alt=''
-									className='m-auto'
-								/>
-								<p>{el.categoryName}</p>
-							</div>
-							</SwiperSlide>
-						))}
-					</Swiper>
+					<div className='w-full'>
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={2}
+							breakpoints={{
+								768: {
+									slidesPerView: 6,
+									spaceBetween: 20,
+								},
+							}}
+						>
+							{data?.map(el => (
+								<SwiperSlide key={el.id}>
+									<div className=' border-1 text-center border-[gray] rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-[white]'>
+										<img
+											src={api + 'images/' + el.categoryImage}
+											alt=''
+											className='m-auto'
+										/>
+										<p>{el.categoryName}</p>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
 					</div>
 					<div className='flex gap-[15px] items-center'>
 						<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
@@ -197,49 +220,52 @@ export default function Home() {
 							</button>
 						</Link>
 					</div>
-					<div className="w-full px-4">
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={1}
-						breakpoints={{
-							768: {
-								slidesPerView: 4, 
-								spaceBetween: 20,
-							},
-						}}
-					>
-						{product?.map(el => (
-							<SwiperSlide key={el.id}>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img
-											src={api + 'images/' + el.image}
-											alt=''
-											className='md:h-[180px]'
-										/>
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={`/product/${el.id}`}>
+					<div className='w-full px-4'>
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={1}
+							breakpoints={{
+								768: {
+									slidesPerView: 4,
+									spaceBetween: 20,
+								},
+							}}
+						>
+							{product?.map(el => (
+								<SwiperSlide key={el.id}>
+									<div className='flex flex-col gap-[10px]'>
+										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
 											<img
-												src={info}
-												className='absolute top-[50px] right-[10px]'
+												src={api + 'images/' + el.image}
 												alt=''
+												className='md:h-[180px]'
 											/>
-										</Link>
-										<button onClick={() => dispatch(AddCart(el.id))} className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
+											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
+												<img src={heart} className='' alt='' />
+											</div>
+											<Link to={`/product/${el.id}`}>
+												<img
+													src={info}
+													className='absolute top-[50px] right-[10px]'
+													alt=''
+												/>
+											</Link>
+											<button
+												onClick={() => dispatch(AddCart(el.id))}
+												className='bg-black text-white w-full py-[10px]'
+											>
+												<ShoppingCartIcon /> Add To Cart
+											</button>
+										</div>
+										<b className='text-[23px]'>{el.productName}</b>
+										<p className='text-[#DB4444] text-[20px]'>
+											{'$ ' + el.price}
+										</p>
+										<img className='w-[30%]' src={starIcon} alt='' />
 									</div>
-									<b className='text-[23px]'>{el.productName}</b>
-									<p className='text-[#DB4444] text-[20px]'>
-										{'$ ' + el.price}
-									</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</SwiperSlide>
-						))}
-					</Swiper>
+								</SwiperSlide>
+							))}
+						</Swiper>
 					</div>
 				</section>
 			</section>

@@ -1,10 +1,11 @@
-import axios from 'axios'
-import { useState } from 'react'
-import api from '../../utils/utils'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { logIn } from '../../store/auth/reducer'
+import { useState } from 'react'
 
 export default function LogIn() {
 	const navigate  =useNavigate()
+	const dispatch = useDispatch()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState(null)
 
@@ -13,13 +14,13 @@ export default function LogIn() {
 			userName: email,
 			password: password
 		}
-		try {
-			const { data } = await axios.post(api + 'Account/login', user)
-			localStorage.setItem('token', data.data)
-			navigate('/')
-		} catch (error) {
-			console.error(error);
-		}
+		const result = await dispatch(logIn(user));
+		
+				if(logIn.fulfilled.match(result)){
+					navigate('/')
+				}else{
+						console.error('error');
+				}
 	}
 
 	return (
