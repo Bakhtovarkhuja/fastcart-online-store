@@ -11,6 +11,7 @@ import { Link } from 'react-router'
 import { useSelector } from 'react-redux'
 
 export default function Header() {
+	const wishlist = JSON.parse(localStorage.getItem('wish'))
 	const { cart } = useSelector(state => state.cart)
 	const [modal, setModal] = useState(false)
 	const [modalMenu, setModalMenu] = useState(false)
@@ -77,9 +78,12 @@ export default function Header() {
 					/>
 					<SearchIcon />
 				</div>
+				<div className='relative'>
+					{wishlist.length > 0 && (<div className='absolute top-[-5px] text-[12px] right-[-5px] w-[15px] h-[15px] rounded-[50%] bg-[red] flex items-center justify-center text-[white]'>{wishlist.length}</div>)}
 				<Link to={'/wishlist'}>
 					<FavoriteBorderIcon />
 				</Link>
+				</div>
 				<div className='hidden md:block relative'>
 					{cart[0]?.totalProducts > 0 && (
 						<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>

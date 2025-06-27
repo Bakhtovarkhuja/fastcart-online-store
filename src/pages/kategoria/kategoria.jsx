@@ -16,40 +16,72 @@ import five from '../../assets/Five star.svg'
 import four from '../../assets/rating4.svg'
 import tree from '../../assets/rating3.svg'
 import two from '../../assets/rating copy.svg'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import { getProduct } from '../../store/product/reducer'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import 'swiper/css'
+import { brandById, categoriaById, getProduct, minPriceMaxPrice } from '../../store/product/reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import api from '../../utils/utils'
+import { getKate } from '../../store/kategoria/reducer'
+import { get } from '../../store/categoria/reducer'
 
 export default function Kategoria() {
-		const dispatch = useDispatch()
-	const {product} = useSelector(state => state.product)
+	const wish = JSON.parse(localStorage.getItem('wish'))
+	const { kategoria } = useSelector(state => state.kategoria)
+	const { data } = useSelector(state => state.categoria)
+	const dispatch = useDispatch()
+	const { product } = useSelector(state => state.product)
 	const [value, setValue] = useState([0, 1000])
+	const [value1, setValue1] = useState([1, 1000])
 
-  const handleRangeChange = (index, val) => {
-    const newVal = [...value];
-    newVal[index] = Number(val);
-    setValue(newVal);
-  };
+	function handleAddToWishlitst(el){
+		const wishlist = {
+			id: el.id,
+			image: el.image,
+			name: el.productName,
+			price: el.price
+		}
 
-  const handleApply = () => {
-    console.log("Price range applied:", value);
-  };
+		wish.push(wishlist)
+		localStorage.setItem('wish', JSON.stringify(wish))
+	}
+
+	const handleRangeChange = (index, val) => {
+		const newVal = [...value]
+		newVal[index] = Number(val)
+		setValue(newVal)
+	}
+	const handleRangeChange1 = (index, val) => {
+		const newVal = [...value1]
+		newVal[index] = Number(val)
+		setValue1(newVal)
+	}
+	
+
+	const handleApply = () => {
+		dispatch(minPriceMaxPrice({
+			min: value[0],
+			max: value1[1]
+		}))
+	}
 
 	const handleInputChange = (index, val) => {
 		const newVal = [...value]
 		newVal[index] = Number(val)
 		setValue(newVal)
 	}
+	const handleInputChange1 = (index, val) => {
+		const newVal = [...value1]
+		newVal[index] = Number(val)
+		setValue(newVal)
+	}
 
 	useEffect(() => {
-			dispatch(getProduct())
-		},[])
+		dispatch(getProduct())
+		dispatch(getKate())
+		dispatch(get())
+	}, [])
 
 	return (
-		
-
 		<>
 			<div className='w-[90%] m-auto md:w-[80%] py-[30px] md:pt-[60px] flex justify-between items-center'>
 				<p className='text-[gray]'>
@@ -95,15 +127,16 @@ export default function Kategoria() {
 							>
 								<Typography component='span'>Category</Typography>
 							</AccordionSummary>
-							<AccordionDetails className='text-[#DB4444]'>
-								All products
+							<AccordionDetails>
+								{data?.map(el => (
+									<div key={el.id} className='flex gap-[5px]'>
+										<input type="checkbox" className='accent-[#DB4444]' onChange={() => dispatch(categoriaById(el?.id))}/>
+										<p>{el?.categoryName}</p>
+									</div>
+								))}
 							</AccordionDetails>
-							<AccordionDetails>Electronics</AccordionDetails>
-							<AccordionDetails>Home & Lifestyle</AccordionDetails>
-							<AccordionDetails>Medicine</AccordionDetails>
-							<AccordionDetails>Sports & Outdoor</AccordionDetails>
-							<AccordionDetails className='text-[#DB4444]'>
-								See all
+							<AccordionDetails>
+								<b onClick={() => dispatch(getProduct())} className='text-[#DB4444]'>See All</b>
 							</AccordionDetails>
 						</Accordion>
 						<Accordion>
@@ -115,52 +148,19 @@ export default function Kategoria() {
 								<Typography component='span'>Brands</Typography>
 							</AccordionSummary>
 							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Samsung</p>
-								</div>
+								{kategoria?.map(el => (
+									<div key={el.id} className='flex gap-[10px]'>
+										<input
+											type='checkbox'
+											className='accent-[#DB4444] w-[17px] h-[25px]'
+											onChange={() => dispatch(brandById(el?.id))}
+										/>
+										<p>{el?.brandName}</p>
+									</div>
+								))}
 							</AccordionDetails>
 							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Apple</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Huawei</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Pocco</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Lenovo</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails className='text-[#DB4444]'>
-								See all
+								<b onClick={() => dispatch(getProduct())} className='text-[#DB4444]'>See All</b>
 							</AccordionDetails>
 						</Accordion>
 						<Accordion>
@@ -226,23 +226,22 @@ export default function Kategoria() {
 							</AccordionSummary>
 							<AccordionDetails>
 								<div className='flex mt-[-15px] mb-[15px]'>
-
-								<input
-									type='range'
-									min='0'
-									max='999999'
-									value={value[0]}
-									onChange={e => handleRangeChange(0, e.target.value)}
-									className='accent-red-500 w-[50%]'
-								/>
-								<input
-									type='range'
-									min='0'
-									max='999999'
-									value={value[1]}
-									onChange={e => handleRangeChange(1, e.target.value)}
-									className='accent-red-500 w-[50%]'
-								/>
+									<input
+										type='range'
+										min='0'
+										max='999999'
+										value={value[0]}
+										onChange={e => handleRangeChange(0, e.target.value)}
+										className='accent-red-500 w-[50%]'
+									/>
+									<input
+										type='range'
+										min='0'
+										max='999999'
+										value={value1[1]}
+										onChange={e => handleRangeChange1(1, e.target.value)}
+										className='accent-red-500 w-[50%]'
+									/>
 								</div>
 								<div
 									style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}
@@ -258,8 +257,8 @@ export default function Kategoria() {
 									<TextField
 										label='Max'
 										type='number'
-										value={value[1]}
-										onChange={e => handleInputChange(1, e.target.value)}
+										value={value1[1]}
+										onChange={e => handleInputChange1(1, e.target.value)}
 										size='small'
 										fullWidth
 									/>
@@ -289,9 +288,7 @@ export default function Kategoria() {
 										name='redio'
 										className='accent-[#DB4444] w-[17px] h-[25px]'
 									/>
-									<p>
-										Any
-									</p>
+									<p>Any</p>
 								</div>
 							</AccordionDetails>
 							<AccordionDetails>
@@ -339,7 +336,7 @@ export default function Kategoria() {
 										type='checkbox'
 										className='accent-[#DB4444] w-[17px] h-[25px]'
 									/>
-									<img src={five} alt="" />
+									<img src={five} alt='' />
 								</div>
 							</AccordionDetails>
 							<AccordionDetails>
@@ -348,7 +345,7 @@ export default function Kategoria() {
 										type='checkbox'
 										className='accent-[#DB4444] w-[17px] h-[25px]'
 									/>
-									<img src={four} alt="" />
+									<img src={four} alt='' />
 								</div>
 							</AccordionDetails>
 							<AccordionDetails>
@@ -357,7 +354,7 @@ export default function Kategoria() {
 										type='checkbox'
 										className='accent-[#DB4444] w-[17px] h-[25px]'
 									/>
-									<img src={tree} alt="" />
+									<img src={tree} alt='' />
 								</div>
 							</AccordionDetails>
 							<AccordionDetails>
@@ -366,56 +363,56 @@ export default function Kategoria() {
 										type='checkbox'
 										className='accent-[#DB4444] w-[17px] h-[25px]'
 									/>
-									<img src={two} alt="" />
+									<img src={two} alt='' />
 								</div>
 							</AccordionDetails>
 						</Accordion>
 					</div>
 				</aside>
 				<aside className='flex flex-col gap-[40px] md:w-[80%]'>
-					<div className="w-full px-4">
-					<Swiper
-						spaceBetween={10}
-						slidesPerView={1}
-						breakpoints={{
-							768: {
-								slidesPerView: 3, 
-								spaceBetween: 20,
-							},
-						}}
-					>
-						{product?.map(el => (
-							<SwiperSlide key={el.id}>
-								<div className='flex flex-col gap-[10px]'>
-									<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-										<img
-											src={api + 'images/' + el.image}
-											alt=''
-											className='md:h-[180px]'
-										/>
-										<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-											<img src={heart} className='' alt='' />
-										</div>
-										<Link to={`/product/${el.id}`}>
+					<div className='w-full px-4'>
+						<Swiper
+							spaceBetween={10}
+							slidesPerView={1}
+							breakpoints={{
+								768: {
+									slidesPerView: 3,
+									spaceBetween: 20,
+								},
+							}}
+						>
+							{product?.map(el => (
+								<SwiperSlide key={el.id}>
+									<div className='flex flex-col gap-[10px]'>
+										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
 											<img
-												src={info}
-												className='absolute top-[50px] right-[10px]'
+												src={api + 'images/' + el.image}
 												alt=''
+												className='md:h-[180px]'
 											/>
-										</Link>
-										<button className='bg-black text-white w-full py-[10px]'>
-											<ShoppingCartIcon /> Add To Cart
-										</button>
+											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
+												<img src={heart} className='' alt='' />
+											</div>
+											<Link to={`/product/${el.id}`}>
+												<img
+													src={info}
+													className='absolute top-[50px] right-[10px]'
+													alt=''
+												/>
+											</Link>
+											<button className='bg-black text-white w-full py-[10px]'>
+												<ShoppingCartIcon /> Add To Cart
+											</button>
+										</div>
+										<b className='text-[23px]'>{el.productName}</b>
+										<p className='text-[#DB4444] text-[20px]'>
+											{'$ ' + el.price}
+										</p>
+										<img className='w-[30%]' src={starIcon} alt='' />
 									</div>
-									<b className='text-[23px]'>{el.productName}</b>
-									<p className='text-[#DB4444] text-[20px]'>
-										{'$ ' + el.price}
-									</p>
-									<img className='w-[30%]' src={starIcon} alt='' />
-								</div>
-							</SwiperSlide>
-						))}
-					</Swiper>
+								</SwiperSlide>
+							))}
+						</Swiper>
 					</div>
 					<div className='flex justify-center mt-[20px]'>
 						<button className='px-[25px] bg-[#DB4444] py-[10px] rounded-[7px] text-[white]'>

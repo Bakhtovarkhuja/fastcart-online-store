@@ -44,6 +44,7 @@ export default function Registration() {
         registerUser(user)
       ).unwrap();
       navigate('/logIn');
+      localStorage.setItem('wish', JSON.stringify([]))
     } catch (error) {
       console.error('Registration error:', error);
     }

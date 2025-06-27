@@ -30,12 +30,23 @@ import { toast } from 'react-toastify';
 
 
 export default function Home() {
+	const wish = JSON.parse(localStorage.getItem('wish'))
 	const dispatch = useDispatch()
 	const { data } = useSelector(state => state.categoria)
 	const { product } = useSelector(state => state.product)
 	const { error } = useSelector(state => state.cart)
-	console.log(error);
-	
+
+	function handleAddToWishlitst(el){
+		const wishlist = {
+			id: el.id,
+			image: el.image,
+			name: el.productName,
+			price: el.price
+		}
+
+		wish.push(wishlist)
+		localStorage.setItem('wish', JSON.stringify(wish))
+	}
 
 	useEffect(() => {
 		dispatch(get())
@@ -146,7 +157,7 @@ export default function Home() {
 												alt=''
 												className='md:h-[180px]'
 											/>
-											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
+											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
 												<img src={heart} className='' alt='' />
 											</div>
 											<Link to={`/product/${el.id}`}>
@@ -220,7 +231,7 @@ export default function Home() {
 							</button>
 						</Link>
 					</div>
-					<div className='w-full px-4'>
+					<div className='w-full'>
 						<Swiper
 							spaceBetween={10}
 							slidesPerView={1}
@@ -232,7 +243,7 @@ export default function Home() {
 							}}
 						>
 							{product?.map(el => (
-								<SwiperSlide key={el.id}>
+								<SwiperSlide key={el.id} className='px-2'>
 									<div className='flex flex-col gap-[10px]'>
 										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
 											<img
@@ -240,7 +251,7 @@ export default function Home() {
 												alt=''
 												className='md:h-[180px]'
 											/>
-											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
+											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
 												<img src={heart} className='' alt='' />
 											</div>
 											<Link to={`/product/${el.id}`}>
