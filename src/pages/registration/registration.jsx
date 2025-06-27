@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -102,6 +102,7 @@ export default function Registration() {
           type="submit"
           disabled={isSubmitting}
           className="bg-[#DB4444] text-white rounded p-2 mt-2"
+          onClick={() => handleRegister()}
         >
           {isSubmitting ? 'Creating...' : 'Create Account'}
         </button>

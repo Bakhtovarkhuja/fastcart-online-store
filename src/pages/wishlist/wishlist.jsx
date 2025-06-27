@@ -47,7 +47,7 @@ export default function Wishlist() {
 	return (
 		<section className='w-[90%] md:py-[60px] md:pb-[120px] m-auto md:w-[80%] py-[30px] flex flex-col gap-[50px]'>
 			<div className='flex justify-between items-center'>
-				<p className='text-[22px]'>Wishlist ({wish.length})</p>
+				<p className='text-[22px]'>Wishlist ({wish?.length})</p>
 				<button className='px-[25px] py-[10px] border border-gray-400 rounded-[7px]'>
 					Move All To Bag
 				</button>

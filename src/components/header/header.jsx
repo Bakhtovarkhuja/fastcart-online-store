@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 import { useSelector } from 'react-redux'
 
 export default function Header() {
-	const wishlist = JSON.parse(localStorage.getItem('wish'))
+	const wishlist = JSON.parse(localStorage.getItem('wish')) || []
 	const { cart } = useSelector(state => state.cart)
 	const [modal, setModal] = useState(false)
 	const [modalMenu, setModalMenu] = useState(false)
@@ -38,6 +38,12 @@ export default function Header() {
 		}
 	}, [modal, modalMenu])
 
+	useEffect(() => {
+		if (!localStorage.getItem('wish')) {
+			localStorage.setItem('wish', JSON.stringify([]))
+		}
+	}, [])
+
 	function handleDelLocalStorege() {
 		localStorage.removeItem('token')
 		localStorage.removeItem('userInfo')
@@ -57,7 +63,7 @@ export default function Header() {
 					className='cursor-pointer z-50'
 				/>
 				<Link to={'/'}>
-				<h1 className='text-[25px]'>Exclusive</h1>
+					<h1 className='text-[25px]'>Exclusive</h1>
 				</Link>
 			</div>
 			<div className='md:flex md:gap-[25px] hidden md:block'>
@@ -84,7 +90,7 @@ export default function Header() {
 					<SearchIcon />
 				</div>
 				<div className='relative'>
-					{wishlist.length > 0 && (
+					{(wishlist.length || 0) > 0 && (
 						<div className='absolute top-[-5px] text-[12px] right-[-5px] w-[15px] h-[15px] rounded-[50%] bg-[red] flex items-center justify-center text-[white]'>
 							{wishlist.length}
 						</div>
@@ -95,24 +101,24 @@ export default function Header() {
 				</div>
 				{token && (
 					<div className='flex gap-[15px] items-center'>
-					<div className='hidden md:block relative'>
-						{cart[0]?.totalProducts > 0 && (
-							<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>
-								{cart[0]?.totalProducts}
-							</div>
-						)}
-						<Link to={'/cart'}>
-							<ShoppingCartIcon />
-						</Link>
+						<div className='hidden md:block relative'>
+							{cart[0]?.totalProducts > 0 && (
+								<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>
+									{cart[0]?.totalProducts}
+								</div>
+							)}
+							<Link to={'/cart'}>
+								<ShoppingCartIcon />
+							</Link>
+						</div>
+						<PersonIcon
+							onClick={e => {
+								e.stopPropagation()
+								setModal(true)
+							}}
+							className='cursor-pointer z-50'
+						/>
 					</div>
-					<PersonIcon
-						onClick={e => {
-							e.stopPropagation()
-							setModal(true)
-						}}
-						className='cursor-pointer z-50'
-					/>
-				</div>
 				)}
 			</div>
 
@@ -137,7 +143,7 @@ export default function Header() {
 						className='flex items-center gap-2'
 						onClick={() => handleDelLocalStorege()}
 					>
-						<Link to={'/'}>
+						<Link to={'/registration'}>
 							<LogoutIcon />
 							<span>Logout</span>
 						</Link>
