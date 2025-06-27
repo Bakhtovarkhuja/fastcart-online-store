@@ -17,6 +17,7 @@ export default function Header() {
 	const [modalMenu, setModalMenu] = useState(false)
 	const modalRef = useRef(null)
 	const menuRef = useRef(null)
+	const token = localStorage.getItem('token')
 
 	useEffect(() => {
 		const handleClickOutside = event => {
@@ -37,15 +38,17 @@ export default function Header() {
 		}
 	}, [modal, modalMenu])
 
-	function handleDelLocalStorege(){
+	function handleDelLocalStorege() {
 		localStorage.removeItem('token')
 		localStorage.removeItem('userInfo')
 	}
 
 	return (
 		<div className='flex items-center justify-between py-[20px] md:px-[10%] px-[5%] shadow-lg relative'>
-			<img src={logo} alt='' className='hidden md:block' />
-			<div className='flex items-center gap-[10px] md:hidden'>
+			<Link to={'/'}>
+				<img src={logo} alt='' className='hidden md:block' />
+			</Link>
+			<div className='flex items-center gap-[10px] md:hidden absolute left-[5%]'>
 				<ViewWeekIcon
 					onClick={e => {
 						e.stopPropagation()
@@ -53,7 +56,9 @@ export default function Header() {
 					}}
 					className='cursor-pointer z-50'
 				/>
+				<Link to={'/'}>
 				<h1 className='text-[25px]'>Exclusive</h1>
+				</Link>
 			</div>
 			<div className='md:flex md:gap-[25px] hidden md:block'>
 				<Link to={'/'}>
@@ -65,7 +70,7 @@ export default function Header() {
 				<Link to={'/about'}>
 					<p>About</p>
 				</Link>
-				<Link to={'/logIn'}>
+				<Link to={'/registration'}>
 					<p>Sign Up</p>
 				</Link>
 			</div>
@@ -79,28 +84,36 @@ export default function Header() {
 					<SearchIcon />
 				</div>
 				<div className='relative'>
-					{wishlist.length > 0 && (<div className='absolute top-[-5px] text-[12px] right-[-5px] w-[15px] h-[15px] rounded-[50%] bg-[red] flex items-center justify-center text-[white]'>{wishlist.length}</div>)}
-				<Link to={'/wishlist'}>
-					<FavoriteBorderIcon />
-				</Link>
-				</div>
-				<div className='hidden md:block relative'>
-					{cart[0]?.totalProducts > 0 && (
-						<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>
-							{cart[0]?.totalProducts}
+					{wishlist.length > 0 && (
+						<div className='absolute top-[-5px] text-[12px] right-[-5px] w-[15px] h-[15px] rounded-[50%] bg-[red] flex items-center justify-center text-[white]'>
+							{wishlist.length}
 						</div>
 					)}
-					<Link to={'/cart'}>
-						<ShoppingCartIcon />
+					<Link to={'/wishlist'}>
+						<FavoriteBorderIcon />
 					</Link>
 				</div>
-				<PersonIcon
-					onClick={e => {
-						e.stopPropagation()
-						setModal(true)
-					}}
-					className='cursor-pointer z-50'
-				/>
+				{token && (
+					<div className='flex gap-[15px] items-center'>
+					<div className='hidden md:block relative'>
+						{cart[0]?.totalProducts > 0 && (
+							<div className='w-[16px] h-[16px] text-[10px] text-white bg-red-600 rounded-full flex justify-center items-center absolute top-[-4px] right-[-4px]'>
+								{cart[0]?.totalProducts}
+							</div>
+						)}
+						<Link to={'/cart'}>
+							<ShoppingCartIcon />
+						</Link>
+					</div>
+					<PersonIcon
+						onClick={e => {
+							e.stopPropagation()
+							setModal(true)
+						}}
+						className='cursor-pointer z-50'
+					/>
+				</div>
+				)}
 			</div>
 
 			{modal && (
@@ -120,8 +133,11 @@ export default function Header() {
 							<span>My Orders</span>
 						</Link>
 					</div>
-					<div className='flex items-center gap-2' onClick={() => handleDelLocalStorege()}>
-						<Link to={'/registration'}>
+					<div
+						className='flex items-center gap-2'
+						onClick={() => handleDelLocalStorege()}
+					>
+						<Link to={'/'}>
 							<LogoutIcon />
 							<span>Logout</span>
 						</Link>

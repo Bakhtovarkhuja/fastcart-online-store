@@ -18,11 +18,17 @@ import tree from '../../assets/rating3.svg'
 import two from '../../assets/rating copy.svg'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
-import { brandById, categoriaById, getProduct, minPriceMaxPrice } from '../../store/product/reducer'
+import {
+	brandById,
+	categoriaById,
+	getProduct,
+	minPriceMaxPrice,
+} from '../../store/product/reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import api from '../../utils/utils'
 import { getKate } from '../../store/kategoria/reducer'
 import { get } from '../../store/categoria/reducer'
+import { AddCart } from '../../store/cart/reducer'
 
 export default function Kategoria() {
 	const wish = JSON.parse(localStorage.getItem('wish'))
@@ -32,18 +38,34 @@ export default function Kategoria() {
 	const { product } = useSelector(state => state.product)
 	const [value, setValue] = useState([0, 1000])
 	const [value1, setValue1] = useState([1, 1000])
-
-	function handleAddToWishlitst(el){
-		const wishlist = {
-			id: el.id,
-			image: el.image,
-			name: el.productName,
-			price: el.price
+	const token = localStorage.getItem('token')
+		const [modal, setModal] = useState(false)
+	
+		function handleAddToWishlitst(el) {
+			const wishlist = {
+				id: el.id,
+				image: el.image,
+				name: el.productName,
+				price: el.price,
+			}
+	
+			const currentWish = JSON.parse(localStorage.getItem('wish')) || []
+	
+			const isExist = currentWish.some(item => item.id === wishlist.id)
+	
+			if (!isExist) {
+				currentWish.push(wishlist)
+				localStorage.setItem('wish', JSON.stringify(currentWish))
+			}
 		}
-
-		wish.push(wishlist)
-		localStorage.setItem('wish', JSON.stringify(wish))
-	}
+	
+		function handleAddToCart(id) {
+			if (token) {
+				dispatch(AddCart(id))
+			} else {
+				setModal(true)
+			}
+		}
 
 	const handleRangeChange = (index, val) => {
 		const newVal = [...value]
@@ -55,13 +77,14 @@ export default function Kategoria() {
 		newVal[index] = Number(val)
 		setValue1(newVal)
 	}
-	
 
 	const handleApply = () => {
-		dispatch(minPriceMaxPrice({
-			min: value[0],
-			max: value1[1]
-		}))
+		dispatch(
+			minPriceMaxPrice({
+				min: value[0],
+				max: value1[1],
+			})
+		)
 	}
 
 	const handleInputChange = (index, val) => {
@@ -130,13 +153,22 @@ export default function Kategoria() {
 							<AccordionDetails>
 								{data?.map(el => (
 									<div key={el.id} className='flex gap-[5px]'>
-										<input type="checkbox" className='accent-[#DB4444]' onChange={() => dispatch(categoriaById(el?.id))}/>
+										<input
+											type='checkbox'
+											className='accent-[#DB4444]'
+											onChange={() => dispatch(categoriaById(el?.id))}
+										/>
 										<p>{el?.categoryName}</p>
 									</div>
 								))}
 							</AccordionDetails>
 							<AccordionDetails>
-								<b onClick={() => dispatch(getProduct())} className='text-[#DB4444]'>See All</b>
+								<b
+									onClick={() => dispatch(getProduct())}
+									className='text-[#DB4444]'
+								>
+									See All
+								</b>
 							</AccordionDetails>
 						</Accordion>
 						<Accordion>
@@ -160,7 +192,12 @@ export default function Kategoria() {
 								))}
 							</AccordionDetails>
 							<AccordionDetails>
-								<b onClick={() => dispatch(getProduct())} className='text-[#DB4444]'>See All</b>
+								<b
+									onClick={() => dispatch(getProduct())}
+									className='text-[#DB4444]'
+								>
+									See All
+								</b>
 							</AccordionDetails>
 						</Accordion>
 						<Accordion>
@@ -370,7 +407,7 @@ export default function Kategoria() {
 					</div>
 				</aside>
 				<aside className='flex flex-col gap-[40px] md:w-[80%]'>
-					<div className='w-full px-4'>
+					<div className='w-full'>
 						<Swiper
 							spaceBetween={10}
 							slidesPerView={1}
@@ -382,7 +419,7 @@ export default function Kategoria() {
 							}}
 						>
 							{product?.map(el => (
-								<SwiperSlide key={el.id}>
+								<SwiperSlide key={el.id} className='px-2'>
 									<div className='flex flex-col gap-[10px]'>
 										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
 											<img
@@ -390,7 +427,10 @@ export default function Kategoria() {
 												alt=''
 												className='md:h-[180px]'
 											/>
-											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
+											<div
+												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
+												onClick={() => handleAddToWishlitst(el)}
+											>
 												<img src={heart} className='' alt='' />
 											</div>
 											<Link to={`/product/${el.id}`}>
@@ -400,7 +440,10 @@ export default function Kategoria() {
 													alt=''
 												/>
 											</Link>
-											<button className='bg-black text-white w-full py-[10px]'>
+											<button
+												onClick={() => handleAddToCart(el.id)}
+												className='cursor-pointer bg-black text-white w-full py-[10px]'
+											>
 												<ShoppingCartIcon /> Add To Cart
 											</button>
 										</div>

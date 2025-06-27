@@ -19,15 +19,14 @@ import image7 from '../../assets/contactArticle7.svg'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { get } from '../../store/categoria/reducer'
 import api from '../../utils/utils'
 import { getProduct } from '../../store/product/reducer'
 import { AddCart } from '../../store/cart/reducer'
 import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
-
+import 'react-toastify/dist/ReactToastify.css'
+import { toast } from 'react-toastify'
 
 export default function Home() {
 	const wish = JSON.parse(localStorage.getItem('wish'))
@@ -35,17 +34,33 @@ export default function Home() {
 	const { data } = useSelector(state => state.categoria)
 	const { product } = useSelector(state => state.product)
 	const { error } = useSelector(state => state.cart)
+	const token = localStorage.getItem('token')
+	const [modal, setModal] = useState(false)
 
-	function handleAddToWishlitst(el){
+	function handleAddToWishlitst(el) {
 		const wishlist = {
 			id: el.id,
 			image: el.image,
 			name: el.productName,
-			price: el.price
+			price: el.price,
 		}
 
-		wish.push(wishlist)
-		localStorage.setItem('wish', JSON.stringify(wish))
+		const currentWish = JSON.parse(localStorage.getItem('wish')) || []
+
+		const isExist = currentWish.some(item => item.id === wishlist.id)
+
+		if (!isExist) {
+			currentWish.push(wishlist)
+			localStorage.setItem('wish', JSON.stringify(currentWish))
+		}
+	}
+
+	function handleAddToCart(id) {
+		if (token) {
+			dispatch(AddCart(id))
+		} else {
+			setModal(true)
+		}
 	}
 
 	useEffect(() => {
@@ -55,22 +70,22 @@ export default function Home() {
 
 	useEffect(() => {
 		if (error === 401) {
-		toast.error('С перво зарегистрировайся!', {
-			position: 'top-center',
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: false,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: 'light',
-		})
-	}
-	},[error])
+			toast.error('С перво зарегистрировайся!', {
+				position: 'top-center',
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: 'light',
+			})
+		}
+	}, [error])
 
 	return (
 		<>
-		<ToastContainer/>
+			<ToastContainer />
 			<section className=' py-[30px] md:py-[60px] md:w-[80%] md:m-auto'>
 				<div className='flex flex-col gap-[20px] md:flex-row '>
 					<div className=' border-1 border-[gray] w-[90%] m-auto py-[10px] px-[15px] rounded-[7px] md:hidden'>
@@ -84,9 +99,11 @@ export default function Home() {
 					<aside className='w-[90%] m-auto flex flex-wrap gap-[10px] md:flex-col md:w-[21%] md:border-r-1 md:border-[gray]'>
 						{data?.map(el => (
 							<div key={el.id}>
-								<p className='bg-[#F5F5F5] md:bg-[white] py-[7px] px-[10px] rounded-[7px]'>
+								<Link to={`/brandCategoriaById/${el.id}`}>
+								<p className='bg-[#F5F5F5] md:bg-[white] py-[7px] px-[10px] rounded-[7px] cursor-pointer'>
 									{el.categoryName}
 								</p>
+								</Link>
 							</div>
 						))}
 					</aside>
@@ -157,7 +174,10 @@ export default function Home() {
 												alt=''
 												className='md:h-[180px]'
 											/>
-											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
+											<div
+												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
+												onClick={() => handleAddToWishlitst(el)}
+											>
 												<img src={heart} className='' alt='' />
 											</div>
 											<Link to={`/product/${el.id}`}>
@@ -168,8 +188,8 @@ export default function Home() {
 												/>
 											</Link>
 											<button
-												onClick={() => dispatch(AddCart(el.id))}
-												className='bg-black text-white w-full py-[10px]'
+												onClick={() => handleAddToCart(el.id)}
+												className='cursor-pointer bg-black text-white w-full py-[10px]'
 											>
 												<ShoppingCartIcon /> Add To Cart
 											</button>
@@ -207,7 +227,7 @@ export default function Home() {
 						>
 							{data?.map(el => (
 								<SwiperSlide key={el.id}>
-									<div className=' border-1 text-center border-[gray] rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-[white]'>
+									<div className=' border-1 text-center border-[gray] rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-[white] cursor-pointer'>
 										<img
 											src={api + 'images/' + el.categoryImage}
 											alt=''
@@ -251,7 +271,10 @@ export default function Home() {
 												alt=''
 												className='md:h-[180px]'
 											/>
-											<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]' onClick={() => handleAddToWishlitst(el)}>
+											<div
+												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
+												onClick={() => handleAddToWishlitst(el)}
+											>
 												<img src={heart} className='' alt='' />
 											</div>
 											<Link to={`/product/${el.id}`}>
@@ -262,8 +285,8 @@ export default function Home() {
 												/>
 											</Link>
 											<button
-												onClick={() => dispatch(AddCart(el.id))}
-												className='bg-black text-white w-full py-[10px]'
+												onClick={() => handleAddToCart(el.id)}
+												className='cursor-pointer bg-black text-white w-full py-[10px]'
 											>
 												<ShoppingCartIcon /> Add To Cart
 											</button>
@@ -324,9 +347,12 @@ export default function Home() {
 										alt=''
 										className='md:h-[180px]'
 									/>
-									<div className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'>
-										<img src={heart} className='' alt='' />
-									</div>
+									<div
+												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'
+												onClick={() => handleAddToWishlitst(el)}
+											>
+												<img src={heart} className='' alt='' />
+											</div>
 									<Link to={`/product/${el.id}`}>
 										<img
 											src={info}
@@ -334,7 +360,7 @@ export default function Home() {
 											alt=''
 										/>
 									</Link>
-									<button className='bg-black text-white w-full py-[10px]'>
+									<button onClick={() => handleAddToCart(el.id)} className='cursor-pointer bg-black text-white w-full py-[10px]'>
 										<ShoppingCartIcon /> Add To Cart
 									</button>
 								</div>
@@ -413,6 +439,20 @@ export default function Home() {
 					<p className='text-[18px]'>We reurn money within 30 days $140</p>
 				</div>
 			</section>
+
+			{modal && (
+				<div className='flex z-40 items-center justify-center bg-[#00000042] fixed top-0 left-0 w-[100%] h-[100vh]'>
+					<div className='p-[20px] rounded-[12px] bg-[white] flex flex-col gap-[15px]'>
+						<b>С перво зарегистрировайся</b>
+						<div className='flex items-center gap-[5px]'>
+							<Link to={'/registration'}>
+							<button className='bg-[#4343c6] text-[white] rounded-[7px] px-[20px] py-[7px]'>Registration</button>
+							</Link>
+							<button className='bg-[#ce3737] text-[white] rounded-[7px] px-[20px] py-[7px]' onClick={() => setModal(false)}>cancel</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</>
 	)
 }
