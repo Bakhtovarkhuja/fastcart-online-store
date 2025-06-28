@@ -27,15 +27,17 @@ import { AddCart } from '../../store/cart/reducer'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { toast } from 'react-toastify'
+import SuperModal from '../../components/modal/modal'
 
 export default function Home() {
-	const wish = JSON.parse(localStorage.getItem('wish'))
+	const wish = JSON.parse(localStorage.getItem('wish')) || []
 	const dispatch = useDispatch()
 	const { data } = useSelector(state => state.categoria)
 	const { product } = useSelector(state => state.product)
 	const { error } = useSelector(state => state.cart)
 	const token = localStorage.getItem('token')
 	const [modal, setModal] = useState(false)
+	const [wishUpdated, setWishUpdated] = useState(false)
 
 	function handleAddToWishlitst(el) {
 		const wishlist = {
@@ -52,7 +54,13 @@ export default function Home() {
 		if (!isExist) {
 			currentWish.push(wishlist)
 			localStorage.setItem('wish', JSON.stringify(currentWish))
+		} else {
+			const filtered = currentWish.filter(item => item.id !== wishlist.id)
+			localStorage.setItem('wish', JSON.stringify(filtered))
 		}
+
+		// Перерендерим
+		setWishUpdated(prev => !prev)
 	}
 
 	function handleAddToCart(id) {
@@ -87,296 +95,328 @@ export default function Home() {
 		<>
 			<ToastContainer />
 			<section className=' py-[30px] md:py-[60px] md:w-[80%] md:m-auto'>
-				<div className='flex flex-col gap-[20px] md:flex-row '>
-					<div className=' border-1 border-[gray] w-[90%] m-auto py-[10px] px-[15px] rounded-[7px] md:hidden'>
-						<input
-							type='text'
-							className='w-[90%] outline-0'
-							placeholder='Search'
-						/>
-						<SearchIcon />
-					</div>
-					<aside className='w-[90%] m-auto flex flex-wrap gap-[10px] md:flex-col md:w-[21%] md:border-r-1 md:border-[gray]'>
-						{data?.map(el => (
-							<div key={el.id}>
-								<Link to={`/brandCategoriaById/${el.id}`}>
-								<p className='bg-[#F5F5F5] md:bg-[white] py-[7px] px-[10px] rounded-[7px] cursor-pointer'>
-									{el.categoryName}
-								</p>
-								</Link>
-							</div>
-						))}
-					</aside>
-					<aside className='text-[white] w-[100%] md:w-[80%] flex flex-col md:flex-row px-[20px] md:items-center py-[30px] bg-[black] gap-[50px]'>
-						<div className='flex flex-col gap-[20px] md:w-[45%]'>
-							<div className='flex gap-[15px] items-center'>
-								<img src={apple} alt='' />
-								<p className='text-[22px]'>iPhone 14 Series</p>
-							</div>
-							<b className='text-[55px] md:text-[50px]'>
-								Up to 10% <br className='md:hidden' /> off{' '}
-								<br className='hidden md:block' /> Voucher
-							</b>
-							<p className='text-[19px]'>Shop Now &nbsp; -> </p>
-						</div>
-						<div className='md:w-[55%]'>
-							<Swiper
-								spaceBetween={50}
-								slidesPerView={1}
-								onSlideChange={() => console.log('slide change')}
-								onSwiper={swiper => console.log(swiper)}
-							>
-								<SwiperSlide>
-									<div className='w-[100%]'>
-										<img src={iphone} alt='' className='w-[100%] h-[100%]' />
-									</div>
-								</SwiperSlide>
-								<SwiperSlide>
-									<div className='w-[100%]'>
-										<img src={iphone} alt='' className='w-[100%] h-[100%]' />
-									</div>
-								</SwiperSlide>
-								<SwiperSlide>
-									<div className='w-[100%]'>
-										<img src={iphone} alt='' className='w-[100%] h-[100%]' />
-									</div>
-								</SwiperSlide>
-							</Swiper>
-						</div>
-					</aside>
-				</div>
-				<section className='w-[90%] md:w-[100%] m-auto py-[30px] flex flex-col gap-[40px]'>
-					<div className='flex gap-[15px] items-center'>
-						<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
-						<b className='text-[#DB4444] text-[25px]'>Today’s</b>
-					</div>
-					<div className='flex flex-col gap-[10px] md:flex-row md:gap-[30px]'>
-						<b className='text-[28px]'>Flash Sales</b>
-						<img src={clock} alt='' />
-					</div>
-					<div className='w-full'>
-						<Swiper
-							spaceBetween={10}
-							slidesPerView={1}
-							breakpoints={{
-								768: {
-									slidesPerView: 4,
-									spaceBetween: 20,
-								},
-							}}
-						>
-							{product?.map(el => (
-								<SwiperSlide key={el.id} className='px-2'>
-									<div className='flex flex-col gap-[10px]'>
-										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-											<img
-												src={api + 'images/' + el.image}
-												alt=''
-												className='md:h-[180px]'
-											/>
-											<div
-												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
-												onClick={() => handleAddToWishlitst(el)}
-											>
-												<img src={heart} className='' alt='' />
-											</div>
-											<Link to={`/product/${el.id}`}>
-												<img
-													src={info}
-													className='absolute top-[50px] right-[10px]'
-													alt=''
-												/>
-											</Link>
-											<button
-												onClick={() => handleAddToCart(el.id)}
-												className='cursor-pointer bg-black text-white w-full py-[10px]'
-											>
-												<ShoppingCartIcon /> Add To Cart
-											</button>
-										</div>
-										<b className='text-[23px]'>{el.productName}</b>
-										<p className='text-[#DB4444] text-[20px]'>
-											{'$ ' + el.price}
-										</p>
-										<img className='w-[30%]' src={starIcon} alt='' />
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
-					</div>
-					<Link to={'/kategoria'}>
-						<button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-[white]'>
-							View All Products
-						</button>
-					</Link>
-					<div className='flex gap-[15px] items-center'>
-						<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
-						<b className='text-[#DB4444] text-[25px]'>Categories</b>
-					</div>
-					<b className='text-[30px]'>Browse By Category</b>
-					<div className='w-full'>
-						<Swiper
-							spaceBetween={10}
-							slidesPerView={2}
-							breakpoints={{
-								768: {
-									slidesPerView: 6,
-									spaceBetween: 20,
-								},
-							}}
-						>
-							{data?.map(el => (
-								<SwiperSlide key={el.id}>
-									<div className=' border-1 text-center border-[gray] rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-[white] cursor-pointer'>
-										<img
-											src={api + 'images/' + el.categoryImage}
-											alt=''
-											className='m-auto'
-										/>
-										<p>{el.categoryName}</p>
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
-					</div>
-					<div className='flex gap-[15px] items-center'>
-						<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
-						<b className='text-[#DB4444] text-[25px]'>This Month</b>
-					</div>
-					<div className='flex flex-col gap-[15px] md:justify-between md:flex-row'>
-						<b className='text-[25px]'>Best Selling Products</b>
-						<Link to={'/kategoria'}>
-							<button className='text-[white] bg-[#DB4444] rounded-[7px] px-[25px] py-[10px]'>
-								View All
-							</button>
-						</Link>
-					</div>
-					<div className='w-full'>
-						<Swiper
-							spaceBetween={10}
-							slidesPerView={1}
-							breakpoints={{
-								768: {
-									slidesPerView: 4,
-									spaceBetween: 20,
-								},
-							}}
-						>
-							{product?.map(el => (
-								<SwiperSlide key={el.id} className='px-2'>
-									<div className='flex flex-col gap-[10px]'>
-										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-											<img
-												src={api + 'images/' + el.image}
-												alt=''
-												className='md:h-[180px]'
-											/>
-											<div
-												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
-												onClick={() => handleAddToWishlitst(el)}
-											>
-												<img src={heart} className='' alt='' />
-											</div>
-											<Link to={`/product/${el.id}`}>
-												<img
-													src={info}
-													className='absolute top-[50px] right-[10px]'
-													alt=''
-												/>
-											</Link>
-											<button
-												onClick={() => handleAddToCart(el.id)}
-												className='cursor-pointer bg-black text-white w-full py-[10px]'
-											>
-												<ShoppingCartIcon /> Add To Cart
-											</button>
-										</div>
-										<b className='text-[23px]'>{el.productName}</b>
-										<p className='text-[#DB4444] text-[20px]'>
-											{'$ ' + el.price}
-										</p>
-										<img className='w-[30%]' src={starIcon} alt='' />
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
-					</div>
-				</section>
-			</section>
-			<section className='md:w-[80%] m-auto p-[25px] flex flex-col gap-[30px] bg-[black] text-[white] md:flex-row md:items-center md:px-[60px] mb-[30px]'>
-				<div className='flex flex-col items-start gap-[15px]'>
-					<b className='text-[20px] text-[#00FF66]'>Categories</b>
-					<b className='text-[40px]'>Enhance Your Music Experience</b>
-					<div className='flex gap-[25px]'>
-						<div className='p-[25px] rounded-[50%] w-[60px] h-[60px] flex justify-center items-center text-[black] bg-[white] flex-col'>
-							<b>23</b>
-							<p>Hours</p>
-						</div>
-						<div className='p-[25px] rounded-[50%] w-[60px] h-[60px] flex justify-center items-center text-[black] bg-[white] flex-col'>
-							<b>23</b>
-							<p>Hours</p>
-						</div>
-						<div className='p-[25px] rounded-[50%] w-[60px] h-[60px] flex justify-center items-center text-[black] bg-[white] flex-col'>
-							<b>23</b>
-							<p>Hours</p>
-						</div>
-						<div className='p-[25px] rounded-[50%] w-[60px] h-[60px] flex justify-center items-center text-[black] bg-[white] flex-col'>
-							<b>23</b>
-							<p>Hours</p>
-						</div>
-					</div>
-					<button className='text-[black] bg-[#00FF66] rounded-[7px] px-[25px] py-[10px]'>
-						Buy Now!
-					</button>
-				</div>
-				<img src={jbl} alt='' />
-			</section>
-			<section className='w-[90%] m-auto flex flex-col gap-[20px] py-[30px] md:w-[80%]'>
-				<div className='flex gap-[15px] items-center'>
-					<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
-					<b className='text-[#DB4444] text-[25px]'>Our Products</b>
-				</div>
-				<b className='text-[30px] pb-[20px]'>Explore Our Products</b>
-				<section className='flex flex-col md:flex-row md:flex-wrap'>
-					{product?.map(el => (
-						<div key={el.id} className='px-2 md:w-[24%] w-[100%]'>
-							<div className='flex flex-col gap-[10px]'>
-								<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-									<img
-										src={api + 'images/' + el.image}
-										alt=''
-										className='md:h-[180px]'
-									/>
-									<div
-												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px]'
-												onClick={() => handleAddToWishlitst(el)}
-											>
-												<img src={heart} className='' alt='' />
-											</div>
-									<Link to={`/product/${el.id}`}>
-										<img
-											src={info}
-											className='absolute top-[50px] right-[10px]'
-											alt=''
-										/>
-									</Link>
-									<button onClick={() => handleAddToCart(el.id)} className='cursor-pointer bg-black text-white w-full py-[10px]'>
-										<ShoppingCartIcon /> Add To Cart
-									</button>
-								</div>
-								<b className='text-[23px]'>{el.productName}</b>
-								<p className='text-[#DB4444] text-[20px]'>{'$ ' + el.price}</p>
-								<img className='w-[30%]' src={starIcon} alt='' />
-							</div>
-						</div>
-					))}
-				</section>
-				<Link to={'/kategoria'}>
-					<button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-[white]'>
-						View All Products
-					</button>
+				<div className='flex flex-col gap-[20px] md:flex-row'>
+	{/* Поисковая строка на мобильных */}
+	<div className='border border-gray-300 w-[90%] m-auto py-[10px] px-[15px] rounded-[7px] md:hidden flex items-center gap-2 hover:shadow-md transition duration-300'>
+		<input
+			type='text'
+			className='w-[90%] outline-0'
+			placeholder='Search'
+		/>
+		<SearchIcon className='text-gray-600 hover:text-black transition duration-300 cursor-pointer' />
+	</div>
+
+	{/* Сайдбар с категориями */}
+	<aside className='w-[90%] m-auto flex flex-wrap gap-[10px] md:flex-col md:w-[21%] md:border-r md:border-gray-300'>
+		{data?.map(el => (
+			<div key={el.id}>
+				<Link to={`/brandCategoriaById/${el.id}`}>
+					<p className='bg-[#F5F5F5] md:bg-white py-[7px] px-[10px] rounded-[7px] cursor-pointer hover:bg-[#e2e2e2] transition duration-300 shadow-sm hover:shadow-md'>
+						{el.categoryName}
+					</p>
 				</Link>
+			</div>
+		))}
+	</aside>
+
+	{/* Блок баннера с телефоном */}
+	<aside className='text-white w-full md:w-[80%] flex flex-col md:flex-row px-[20px] md:items-center py-[30px] bg-black gap-[50px] rounded-xl shadow-lg transition duration-300 hover:scale-[1.01]'>
+		{/* Левая часть с текстом */}
+		<div className='flex flex-col gap-[20px] md:w-[45%]'>
+			<div className='flex gap-[15px] items-center'>
+				<img src={apple} alt='Apple' className='w-[30px] h-[30px] animate-pulse' />
+				<p className='text-[22px] font-semibold'>iPhone 14 Series</p>
+			</div>
+			<b className='text-[55px] md:text-[50px] leading-[1.1]'>
+				Up to 10% <br className='md:hidden' /> off{' '}
+				<br className='hidden md:block' /> Voucher
+			</b>
+			<p className='text-[19px] hover:underline cursor-pointer w-fit'>
+				Shop Now &nbsp; →
+			</p>
+		</div>
+
+		{/* Правая часть с каруселью */}
+		<div className='md:w-[55%] rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition duration-500'>
+			<Swiper
+				spaceBetween={50}
+				slidesPerView={1}
+				onSlideChange={() => console.log('slide change')}
+				onSwiper={swiper => console.log(swiper)}
+				className='rounded-xl'
+			>
+				{[iphone, iphone, iphone].map((img, idx) => (
+					<SwiperSlide key={idx}>
+						<div className='w-full'>
+							<img
+								src={img}
+								alt={`iPhone Slide ${idx + 1}`}
+								className='w-full h-full object-cover hover:scale-105 transition-transform duration-500'
+							/>
+						</div>
+					</SwiperSlide>
+				))}
+			</Swiper>
+		</div>
+	</aside>
+</div>
+
+				<section className='w-[90%] md:w-[100%] m-auto py-[30px] flex flex-col gap-[40px]'>
+  {/* Заголовок "Today’s" */}
+  <div className='flex gap-[15px] items-center'>
+    <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
+    <b className='text-[#DB4444] text-[25px]'>Today’s</b>
+  </div>
+
+  {/* Заголовок "Flash Sales" */}
+  <div className='flex flex-col gap-[10px] md:flex-row md:gap-[30px] items-center'>
+    <b className='text-[28px]'>Flash Sales</b>
+    <img src={clock} alt='' />
+  </div>
+
+  {/* Продукты */}
+  <div className='w-full'>
+    <Swiper
+      spaceBetween={10}
+      slidesPerView={1}
+      breakpoints={{
+        768: { slidesPerView: 4, spaceBetween: 20 },
+      }}
+    >
+      {product?.map(el => {
+        const wish = JSON.parse(localStorage.getItem('wish')) || []
+        const isInWish = wish.some(item => item.id === el.id)
+        return (
+          <SwiperSlide key={el.id} className='px-2'>
+            <div className='flex flex-col gap-[10px]'>
+              <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
+                <img
+                  src={api + 'images/' + el.image}
+                  alt=''
+                  className='md:h-[180px] object-contain transition-transform duration-500 hover:scale-105'
+                />
+                <div
+                  className={`absolute top-[10px] right-[10px] w-[35px] h-[35px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 shadow-md hover:scale-110 ${
+                    isInWish ? 'bg-red-500' : 'bg-white'
+                  }`}
+                  onClick={() => handleAddToWishlitst(el)}
+                >
+                  <img src={heart} alt='' className='w-[18px]' />
+                </div>
+                <Link to={`/product/${el.id}`}>
+                  <img
+                    src={info}
+                    className='absolute top-[50px] right-[10px] hover:scale-110 transition-transform duration-300'
+                    alt=''
+                  />
+                </Link>
+                <button
+                  onClick={() => handleAddToCart(el.id)}
+                  className='cursor-pointer bg-black text-white w-full py-[10px] hover:bg-[#2d2b2b] transition duration-300 ease-in-out hover:scale-[1.02]'
+                >
+                  <ShoppingCartIcon /> Add To Cart
+                </button>
+              </div>
+              <b className='text-[23px]'>{el.productName}</b>
+              <p className='text-[#DB4444] text-[20px]'>$ {el.price}</p>
+              <img className='w-[30%]' src={starIcon} alt='' />
+            </div>
+          </SwiperSlide>
+        )
+      })}
+    </Swiper>
+  </div>
+
+  {/* Кнопка "View All Products" */}
+  <Link to={'/kategoria'}>
+    <button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-white cursor-pointer transition duration-300 ease-in-out hover:bg-[#c73737] hover:scale-[1.05] shadow-md hover:shadow-lg'>
+      View All Products
+    </button>
+  </Link>
+
+  {/* Категории */}
+  <div className='flex gap-[15px] items-center'>
+    <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
+    <b className='text-[#DB4444] text-[25px]'>Categories</b>
+  </div>
+  <b className='text-[30px]'>Browse By Category</b>
+  <div className='w-full'>
+    <Swiper
+      spaceBetween={10}
+      slidesPerView={2}
+      breakpoints={{
+        768: { slidesPerView: 6, spaceBetween: 20 },
+      }}
+    >
+      {data?.map(el => (
+        <SwiperSlide key={el.id}>
+          <Link to={`/brandCategoriaById/${el.id}`}>
+            <div className='border border-gray-300 text-center rounded-[7px] flex flex-col gap-[10px] items-center p-[15px] hover:bg-[#DB4444] hover:text-white cursor-pointer transition duration-300 ease-in-out hover:scale-[1.05] shadow-sm hover:shadow-lg'>
+              <img
+                src={api + 'images/' + el.categoryImage}
+                alt=''
+                className='m-auto object-contain'
+              />
+              <p>{el.categoryName}</p>
+            </div>
+          </Link>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  </div>
+
+  {/* "Best Selling Products" */}
+  <div className='flex gap-[15px] items-center'>
+    <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
+    <b className='text-[#DB4444] text-[25px]'>This Month</b>
+  </div>
+  <div className='flex flex-col gap-[15px] md:justify-between md:flex-row'>
+    <b className='text-[25px]'>Best Selling Products</b>
+    <Link to={'/kategoria'}>
+      <button className='text-white bg-[#DB4444] rounded-[7px] px-[25px] py-[10px] cursor-pointer transition duration-300 ease-in-out hover:bg-[#c73737] hover:scale-[1.05] shadow-md hover:shadow-lg'>
+        View All
+      </button>
+    </Link>
+  </div>
+
+  {/* Best Sellers */}
+  <div className='w-full'>
+    <Swiper
+      spaceBetween={10}
+      slidesPerView={1}
+      breakpoints={{
+        768: { slidesPerView: 4, spaceBetween: 20 },
+      }}
+    >
+      {product?.map(el => {
+        const wish = JSON.parse(localStorage.getItem('wish')) || []
+        const isInWish = wish.some(item => item.id === el.id)
+        return (
+          <SwiperSlide key={el.id} className='px-2'>
+            <div className='flex flex-col gap-[10px]'>
+              <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
+                <img
+                  src={api + 'images/' + el.image}
+                  alt=''
+                  className='md:h-[180px] object-contain transition-transform duration-500 hover:scale-105'
+                />
+                <div
+                  className={`absolute top-[10px] right-[10px] w-[35px] h-[35px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 shadow-md hover:scale-110 ${
+                    isInWish ? 'bg-red-500' : 'bg-white'
+                  }`}
+                  onClick={() => handleAddToWishlitst(el)}
+                >
+                  <img src={heart} alt='' className='w-[18px]' />
+                </div>
+                <Link to={`/product/${el.id}`}>
+                  <img
+                    src={info}
+                    className='absolute top-[50px] right-[10px] hover:scale-110 transition-transform duration-300'
+                    alt=''
+                  />
+                </Link>
+                <button
+                  onClick={() => handleAddToCart(el.id)}
+                  className='cursor-pointer bg-black text-white w-full py-[10px] hover:bg-[#2d2b2b] transition duration-300 ease-in-out hover:scale-[1.02]'
+                >
+                  <ShoppingCartIcon /> Add To Cart
+                </button>
+              </div>
+              <b className='text-[23px]'>{el.productName}</b>
+              <p className='text-[#DB4444] text-[20px]'>$ {el.price}</p>
+              <img className='w-[30%]' src={starIcon} alt='' />
+            </div>
+          </SwiperSlide>
+        )
+      })}
+    </Swiper>
+  </div>
+</section>
+
 			</section>
+			<section className='md:w-[80%] m-auto p-[25px] flex flex-col gap-[30px] bg-black text-white md:flex-row md:items-center md:px-[60px] mb-[30px] rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 ease-in-out'>
+  <div className='flex flex-col items-start gap-[15px]'>
+    <b className='text-[20px] text-[#00FF66] uppercase tracking-wide'>Categories</b>
+    <b className='text-[40px] font-semibold leading-tight'>Enhance Your Music Experience</b>
+
+    {/* Таймер */}
+    <div className='flex gap-[25px]'>
+      {['23', '59', '59', '99'].map((val, i) => (
+        <div
+          key={i}
+          className='p-[15px] w-[70px] h-[70px] rounded-full flex flex-col items-center justify-center text-black bg-white font-bold text-sm shadow-md hover:scale-105 transition-transform duration-300'
+        >
+          <b className='text-[18px]'>{val}</b>
+          <p className='text-[12px]'>{['Hours', 'Minutes', 'Seconds', 'MS'][i]}</p>
+        </div>
+      ))}
+    </div>
+
+    <button className='text-black bg-[#00FF66] rounded-[7px] px-[25px] py-[10px] mt-4 font-medium hover:bg-[#00e65c] hover:scale-105 transition duration-300 shadow-md hover:shadow-xl'>
+      Buy Now!
+    </button>
+  </div>
+
+  <img src={jbl} alt='Promo' className='w-full md:w-[50%] object-contain transition-transform duration-500 hover:scale-105' />
+</section>
+
+{/* Our Products */}
+<section className='w-[90%] m-auto flex flex-col gap-[20px] py-[30px] md:w-[80%]'>
+  <div className='flex gap-[15px] items-center'>
+    <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
+    <b className='text-[#DB4444] text-[25px]'>Our Products</b>
+  </div>
+  <b className='text-[30px] pb-[20px]'>Explore Our Products</b>
+
+  <section className='flex flex-col md:flex-row md:flex-wrap gap-[20px]'>
+    {product?.map(el => {
+        const wish = JSON.parse(localStorage.getItem('wish')) || []
+        const isInWish = wish.some(item => item.id === el.id)
+        return (
+            <div className='flex flex-col gap-[10px]'>
+              <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
+                <img
+                  src={api + 'images/' + el.image}
+                  alt=''
+                  className='md:h-[180px] object-contain transition-transform duration-500 hover:scale-105'
+                />
+                <div
+                  className={`absolute top-[10px] right-[10px] w-[35px] h-[35px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 shadow-md hover:scale-110 ${
+                    isInWish ? 'bg-red-500' : 'bg-white'
+                  }`}
+                  onClick={() => handleAddToWishlitst(el)}
+                >
+                  <img src={heart} alt='' className='w-[18px]' />
+                </div>
+                <Link to={`/product/${el.id}`}>
+                  <img
+                    src={info}
+                    className='absolute top-[50px] right-[10px] hover:scale-110 transition-transform duration-300'
+                    alt=''
+                  />
+                </Link>
+                <button
+                  onClick={() => handleAddToCart(el.id)}
+                  className='cursor-pointer bg-black text-white w-full py-[10px] hover:bg-[#2d2b2b] transition duration-300 ease-in-out hover:scale-[1.02]'
+                >
+                  <ShoppingCartIcon /> Add To Cart
+                </button>
+              </div>
+              <b className='text-[23px]'>{el.productName}</b>
+              <p className='text-[#DB4444] text-[20px]'>$ {el.price}</p>
+              <img className='w-[30%]' src={starIcon} alt='' />
+            </div>
+        )
+      })}
+  </section>
+
+  <Link to={'/kategoria'}>
+    <button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-white font-semibold shadow-md hover:bg-[#c73737] hover:scale-[1.05] transition-all duration-300 cursor-pointer'>
+      View All Products
+    </button>
+  </Link>
+</section>
+
 			<section className='w-[90%] m-auto md:w-[80%] py-[30px] flex gap-[20px] flex-col'>
 				<div className='flex gap-[15px] items-center'>
 					<div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
@@ -441,17 +481,12 @@ export default function Home() {
 			</section>
 
 			{modal && (
-				<div className='flex z-40 items-center justify-center bg-[#00000042] fixed top-0 left-0 w-[100%] h-[100vh]'>
-					<div className='p-[20px] rounded-[12px] bg-[white] flex flex-col gap-[15px]'>
-						<b>С перво зарегистрировайся</b>
-						<div className='flex items-center gap-[5px]'>
-							<Link to={'/registration'}>
-							<button className='bg-[#4343c6] text-[white] rounded-[7px] px-[20px] py-[7px]'>Registration</button>
-							</Link>
-							<button className='bg-[#ce3737] text-[white] rounded-[7px] px-[20px] py-[7px]' onClick={() => setModal(false)}>cancel</button>
-						</div>
-					</div>
-				</div>
+				<>
+					<SuperModal isOpen={modal} setIsOpen={setModal} />
+				  <button onClick={() => setModal(true)} className='bg-black text-white px-4 py-2 rounded-md'>
+      Открыть Модал
+    </button>
+				</>
 			)}
 		</>
 	)

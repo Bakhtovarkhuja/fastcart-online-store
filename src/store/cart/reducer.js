@@ -63,6 +63,34 @@ export const removeCart = createAsyncThunk('CartSlice/removeCart',
 		}
 	}
 )
+export const incrementCart = createAsyncThunk('CartSlice/incrementCart',
+	async (id, {dispatch}) => {
+		try {
+			await axios.put(api + 'Cart/increase-product-in-cart?id=' + id, {
+				headers: {
+					"Authorization": `Bearer ${localStorage.getItem('token')}`
+				}
+			})
+			dispatch(getCart())
+		} catch (error) {
+			console.error(error);
+		}
+	}
+)
+export const decrementCart = createAsyncThunk('CartSlice/decrementCart',
+	async (id, {dispatch}) => {
+		try {
+			await axios.put(api + 'Cart/reduce-product-in-cart?id=' + id, {
+				headers: {
+					"Authorization": `Bearer ${localStorage.getItem('token')}`
+				}
+			})
+			dispatch(getCart())
+		} catch (error) {
+			console.error(error);
+		}
+	}
+)
 
 
 export const CartSlice = createSlice({

@@ -2,7 +2,7 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router'
-import { delCart, getCart, removeCart } from '../../store/cart/reducer'
+import { decrementCart, delCart, getCart, incrementCart, removeCart } from '../../store/cart/reducer'
 import api from '../../utils/utils'
 
 export default function Cart() {
@@ -27,23 +27,6 @@ export default function Cart() {
 					<b className='px-[20px]'>Subtotal</b>
 				</div>
 				<div>
-					{/* <div className='md:h-[70px] md:justify-between md:items-center rounded-[15px] shadow-[0_8px_8px_rgba(0,0,0,0.25)] flex justify-between px-[20px] py-[10px]'>
-						<div className='flex flex-col md:flex-row md:w-[44%] md:justify-between'>
-							<div className='flex gap-[10px] flex-col md:flex-row items-start'>
-								<img src={google} alt='' />
-								<b>LCD Monitor</b>
-							</div>
-							<b className='mr-[100px]'>$650</b>
-						</div>
-						<div className='flex flex-col items-center justify-between md:flex-row md:w-[39%]'>
-							<div>
-								<input type="number" className='border-1 border-black py-[7px] px-[15px] rounded-[7px] w-[70px]'/>
-							</div>
-							<b className='justify-center flex gap-[10px] px-[20px]'>
-								$650 <button>🗑️</button>
-							</b>
-						</div>
-					</div> */}
 					{cart[0]?.productsInCart?.map(el => (
 						<div
 							className='md:h-[70px] md:justify-between md:items-center rounded-[15px] shadow-[0_8px_8px_rgba(0,0,0,0.25)] flex justify-between px-[20px] py-[10px]'
@@ -61,12 +44,10 @@ export default function Cart() {
 								<b className='mr-[100px]'>$ {el.product.price}</b>
 							</div>
 							<div className='flex flex-col items-center justify-between md:flex-row md:w-[39%]'>
-								<div>
-									<input
-										type='number'
-										className='border-1 border-black py-[7px] px-[15px] rounded-[7px] w-[70px]'
-										value={el.product.quantity}
-									/>
+								<div className='flex items-center gap-[10px]'>
+									<button className='text-[25px] bg-[#b64444] py-[0px] px-[5px] rounded-[7px] text-[white] cursor-pointer' onClick={() => dispatch(decrementCart(el.id))}>-</button>
+									<b>{el.product.quantity}</b>
+									<button className='text-[20px] bg-[#3da53d] py-[2px] px-[5px] rounded-[7px] text-[white] cursor-pointer' onClick={() => dispatch(incrementCart(el.id))}>+</button>
 								</div>
 								<b className='justify-center flex gap-[10px] px-[20px]'>
 									$ {+el.product.price * +el.product.quantity}{' '}
