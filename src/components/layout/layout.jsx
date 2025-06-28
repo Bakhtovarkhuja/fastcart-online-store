@@ -5,7 +5,9 @@ import Header from '../header/header'
 export default function Layout(){
 	return<>
 		<Header></Header>
-		<Outlet></Outlet>
+		<main style={{ paddingTop: '80px' }}>
+        <Outlet />
+      </main>
 		<Footer></Footer>
 	</>
 }

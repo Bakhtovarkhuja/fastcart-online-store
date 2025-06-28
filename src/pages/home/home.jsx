@@ -373,7 +373,7 @@ export default function Home() {
         const wish = JSON.parse(localStorage.getItem('wish')) || []
         const isInWish = wish.some(item => item.id === el.id)
         return (
-            <div className='flex flex-col gap-[10px]'>
+            <div className='flex flex-col gap-[10px] w-[23.5%]'>
               <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
                 <img
                   src={api + 'images/' + el.image}
