@@ -8,9 +8,11 @@ import { useEffect, useRef, useState } from 'react'
 import FilterFramesIcon from '@mui/icons-material/FilterFrames'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { searchByName } from '../../store/product/reducer'
 
 export default function Header() {
+	const dispatch = useDispatch()
   const [wishlist, setWishlist] = useState(() => JSON.parse(localStorage.getItem('wish')) || [])
   const { cart } = useSelector(state => state.cart)
   const [modal, setModal] = useState(false)
@@ -19,6 +21,12 @@ export default function Header() {
   const menuRef = useRef(null)
   const token = localStorage.getItem('token')
   const navigate = useNavigate()
+  const [search, setSearch] = useState('')
+
+  function handleSearch(e){
+	setSearch(e)
+	dispatch(searchByName(e))
+  }
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -59,11 +67,15 @@ export default function Header() {
     }
   }, [])
 
+  useEffect(() => {
+	dispatch(searchByName())
+  },[])
+
   function handleDelLocalStorage() {
     localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
     setModal(false)
-    navigate('/') // редирект после логаута, например на главную
+    navigate('/')
   }
 
   function handleUserClick(e) {
@@ -71,7 +83,7 @@ export default function Header() {
     if (token) {
       setModal(true)
     } else {
-      navigate('/registration') // если не залогинен, ведём на регистрацию
+      navigate('/registration')
     }
   }
 
@@ -81,7 +93,6 @@ export default function Header() {
         <img src={logo} alt='Logo' className='hidden md:block' />
       </Link>
 
-      {/* Мобильное меню и логотип */}
       <div className='flex items-center gap-[10px] md:hidden absolute left-[5%]'>
         <ViewWeekIcon
           onClick={e => {
@@ -95,7 +106,6 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* Навигация (скрыта на мобилке) */}
       <nav className='hidden md:flex md:gap-[25px]'>
         <Link to={'/'}>
           <p className='cursor-pointer hover:text-indigo-600 transition'>Home</p>
@@ -111,19 +121,18 @@ export default function Header() {
         </Link>
       </nav>
 
-      {/* Поиск (скрыт на мобилке) */}
+
+      <div className='flex items-center gap-[25px] relative z-50'>
       <div className='hidden md:flex items-center gap-2 bg-[#F5F5F5] px-[15px] py-[7px] rounded-[12px] w-[300px]'>
         <input
+		  value={search}
+		  onChange={(e) => handleSearch(e.target.value)}
           type='text'
           className='w-full outline-none bg-transparent'
           placeholder='What are you looking for?'
         />
         <SearchIcon className='text-gray-500 cursor-pointer' />
       </div>
-
-      {/* Иконки справа */}
-      <div className='flex items-center gap-[25px] relative z-50'>
-        {/* Wishlist */}
         <div className='relative cursor-pointer'>
           {wishlist.length > 0 && (
             <div className='absolute top-[-5px] right-[-5px] text-[12px] w-[18px] h-[18px] bg-red-600 text-white rounded-full flex items-center justify-center font-semibold'>
@@ -134,8 +143,8 @@ export default function Header() {
             <FavoriteBorderIcon className='text-gray-700 hover:text-indigo-600 transition' />
           </Link>
         </div>
-
-        {/* Корзина — видна всегда */}
+        {token && (
+          <div className='flex items-center gap-[15px]'>
         <div className='relative cursor-pointer'>
           {cart[0]?.totalProducts > 0 && (
             <div className='absolute top-[-5px] right-[-5px] text-[12px] w-[18px] h-[18px] bg-red-600 text-white rounded-full flex items-center justify-center font-semibold'>
@@ -147,14 +156,14 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Иконка пользователя — видна всегда, кликабельна */}
         <PersonIcon
           onClick={handleUserClick}
           className='text-gray-700 hover:text-indigo-600 transition cursor-pointer'
         />
       </div>
+        )}
+        </div>
 
-      {/* Модальное окно пользователя (появляется если залогинен) */}
       {modal && (
         <div
           ref={modalRef}
@@ -184,7 +193,6 @@ export default function Header() {
         </div>
       )}
 
-      {/* Мобильное меню */}
       {modalMenu && (
         <div
           ref={menuRef}

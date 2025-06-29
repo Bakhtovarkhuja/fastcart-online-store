@@ -59,7 +59,6 @@ export default function Home() {
 			localStorage.setItem('wish', JSON.stringify(filtered))
 		}
 
-		// Перерендерим
 		setWishUpdated(prev => !prev)
 	}
 
@@ -162,19 +161,16 @@ export default function Home() {
 </div>
 
 				<section className='w-[90%] md:w-[100%] m-auto py-[30px] flex flex-col gap-[40px]'>
-  {/* Заголовок "Today’s" */}
   <div className='flex gap-[15px] items-center'>
     <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
     <b className='text-[#DB4444] text-[25px]'>Today’s</b>
   </div>
 
-  {/* Заголовок "Flash Sales" */}
   <div className='flex flex-col gap-[10px] md:flex-row md:gap-[30px] items-center'>
     <b className='text-[28px]'>Flash Sales</b>
     <img src={clock} alt='' />
   </div>
 
-  {/* Продукты */}
   <div className='w-full'>
     <Swiper
       spaceBetween={10}
@@ -227,14 +223,12 @@ export default function Home() {
     </Swiper>
   </div>
 
-  {/* Кнопка "View All Products" */}
   <Link to={'/kategoria'}>
     <button className='bg-[#DB4444] w-[220px] mt-[20px] m-auto px-[25px] py-[10px] rounded-[7px] text-white cursor-pointer transition duration-300 ease-in-out hover:bg-[#c73737] hover:scale-[1.05] shadow-md hover:shadow-lg'>
       View All Products
     </button>
   </Link>
 
-  {/* Категории */}
   <div className='flex gap-[15px] items-center'>
     <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
     <b className='text-[#DB4444] text-[25px]'>Categories</b>
@@ -265,7 +259,6 @@ export default function Home() {
     </Swiper>
   </div>
 
-  {/* "Best Selling Products" */}
   <div className='flex gap-[15px] items-center'>
     <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>
     <b className='text-[#DB4444] text-[25px]'>This Month</b>
@@ -279,7 +272,6 @@ export default function Home() {
     </Link>
   </div>
 
-  {/* Best Sellers */}
   <div className='w-full'>
     <Swiper
       spaceBetween={10}
@@ -339,7 +331,6 @@ export default function Home() {
     <b className='text-[20px] text-[#00FF66] uppercase tracking-wide'>Categories</b>
     <b className='text-[40px] font-semibold leading-tight'>Enhance Your Music Experience</b>
 
-    {/* Таймер */}
     <div className='flex gap-[25px]'>
       {['23', '59', '59', '99'].map((val, i) => (
         <div
@@ -360,7 +351,6 @@ export default function Home() {
   <img src={jbl} alt='Promo' className='w-full md:w-[50%] object-contain transition-transform duration-500 hover:scale-105' />
 </section>
 
-{/* Our Products */}
 <section className='w-[90%] m-auto flex flex-col gap-[20px] py-[30px] md:w-[80%]'>
   <div className='flex gap-[15px] items-center'>
     <div className='h-[60px] w-[40px] rounded-[10px] bg-[#DB4444]'></div>

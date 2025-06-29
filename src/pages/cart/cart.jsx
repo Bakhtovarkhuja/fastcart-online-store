@@ -8,7 +8,6 @@ import api from '../../utils/utils'
 export default function Cart() {
 	const dispatch = useDispatch()
 	const { cart } = useSelector(state => state.cart)
-	console.log(cart, cart.productsInCart)
 
 	useEffect(() => {
 		dispatch(getCart())
@@ -45,43 +44,75 @@ export default function Cart() {
 							</div>
 							<div className='flex flex-col items-center justify-between md:flex-row md:w-[39%]'>
 								<div className='flex items-center gap-[10px]'>
-									<button className='text-[25px] bg-[#b64444] py-[0px] px-[5px] rounded-[7px] text-[white] cursor-pointer' onClick={() => dispatch(decrementCart(el.id))}>-</button>
+									<button
+										className='text-[25px] bg-[#b64444] py-[0px] px-[5px] rounded-[7px] text-white cursor-pointer hover:bg-[#922d2d] transition-all'
+										onClick={() => dispatch(decrementCart(el.id))}
+									>
+										-
+									</button>
 									<b>{el.product.quantity}</b>
-									<button className='text-[20px] bg-[#3da53d] py-[2px] px-[5px] rounded-[7px] text-[white] cursor-pointer' onClick={() => dispatch(incrementCart(el.id))}>+</button>
+									<button
+										className='text-[20px] bg-[#3da53d] py-[2px] px-[5px] rounded-[7px] text-white cursor-pointer hover:bg-[#2c802c] transition-all'
+										onClick={() => dispatch(incrementCart(el.id))}
+									>
+										+
+									</button>
 								</div>
 								<b className='justify-center flex gap-[10px] px-[20px]'>
 									$ {+el.product.price * +el.product.quantity}{' '}
-									<button onClick={() => dispatch(delCart(el.id))}>🗑️</button>
+									<button
+										className='cursor-pointer hover:text-[#b64444] transition-all'
+										onClick={() => dispatch(delCart(el.id))}
+									>
+										🗑️
+									</button>
 								</b>
 							</div>
 						</div>
 					))}
 				</div>
 			</section>
+
 			<section className='w-[90%] md:w-[80%] m-auto flex justify-between mb-[40px] items-center'>
-				<button className='border-2 border-black rounded-[7px] py-[10px] px-[25px]'>
+				<button className='border-2 border-black rounded-[7px] py-[10px] px-[25px] cursor-pointer hover:bg-black hover:text-white transition-all duration-300'>
 					Return To Shop
 				</button>
+
 				<div className='hidden md:block'>
 					<div className='md:flex md:gap-[20px]'>
-						<button className='border-2 rounded-[7px] border-black py-[10px] px-[25px]'>
+						<button className='border-2 rounded-[7px] border-black py-[10px] px-[25px] cursor-pointer hover:bg-black hover:text-white transition-all duration-300'>
 							Update Cart
 						</button>
 						<button
-							className='text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px]'
+							className='text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px] cursor-pointer hover:bg-[#DB4444] hover:text-white transition-all duration-300'
 							onClick={() => dispatch(removeCart())}
 						>
 							Remove all
 						</button>
 					</div>
 				</div>
+
 				<div className='flex gap-[20px] md:hidden text-[25px]'>
 					<RotateLeftIcon
-						sx={{ width: '40px', height: '40px' }} 
-					></RotateLeftIcon>
-					<b onClick={() => dispatch(removeCart())}>🗑️</b>
+						sx={{
+							width: '40px',
+							height: '40px',
+							cursor: 'pointer',
+							transition: '0.3s',
+							'&:hover': {
+								color: '#555'
+							}
+						}}
+					/>
+					<b
+						className='cursor-pointer hover:text-[#b64444] transition-all'
+						onClick={() => dispatch(removeCart())}
+					>
+						🗑️
+					</b>
 				</div>
 			</section>
+
 			<section className='w-[90%] md:w-[80%] m-auto flex md:flex-row flex-col justify-between items-start gap-[20px]'>
 				<div className='flex gap-[20px]'>
 					<input
@@ -89,7 +120,7 @@ export default function Cart() {
 						placeholder='Coupon Code'
 						className='py-[10px] px-[25px] border-2 rounded-[7px] border-gray'
 					/>
-					<button className='text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px]'>
+					<button className='text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px] cursor-pointer hover:bg-[#DB4444] hover:text-white transition-all duration-300'>
 						Apply
 					</button>
 				</div>
@@ -109,7 +140,7 @@ export default function Cart() {
 						<b>$1750</b>
 					</div>
 					<Link to={'/checkOut'}>
-						<button className='ml-[22%] text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px]'>
+						<button className='ml-[22%] text-[#DB4444] rounded-[7px] border-[#DB4444] border-2 py-[10px] px-[25px] cursor-pointer hover:bg-[#DB4444] hover:text-white transition-all duration-300'>
 							Procees to checkout
 						</button>
 					</Link>

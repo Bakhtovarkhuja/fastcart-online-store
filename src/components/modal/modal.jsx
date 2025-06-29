@@ -18,7 +18,6 @@ export default function SuperModal({ isOpen, setIsOpen }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          {/* Затенение с лёгким блеском */}
           <div className="fixed inset-0 bg-gradient-to-br from-black/70 via-gray-900/60 to-black/70 backdrop-blur-md">
             <motion.div
               className="absolute inset-0 pointer-events-none"
@@ -46,7 +45,6 @@ export default function SuperModal({ isOpen, setIsOpen }) {
                   transition={{ type: 'spring', stiffness: 260, damping: 20 }}
                   className="flex flex-col items-center gap-6"
                 >
-                  {/* Пульсирующая иконка */}
                   <motion.div
                     animate={{ scale: [1, 1.15, 1] }}
                     transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
@@ -55,7 +53,6 @@ export default function SuperModal({ isOpen, setIsOpen }) {
                     <FaExclamationTriangle className="text-[50px] drop-shadow-lg" />
                   </motion.div>
 
-                  {/* Заголовок с плавным появлением */}
                   <motion.h3
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -65,7 +62,6 @@ export default function SuperModal({ isOpen, setIsOpen }) {
                     Сначала зарегистрируйтесь
                   </motion.h3>
 
-                  {/* Описание */}
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -75,7 +71,6 @@ export default function SuperModal({ isOpen, setIsOpen }) {
                     Чтобы продолжить, вам нужно зарегистрироваться. Мы обещаем — это быстро и бесплатно!
                   </motion.p>
 
-                  {/* Кнопки с эффектами */}
                   <div className="mt-6 flex gap-4 w-full justify-center">
                     <Link to="/registration" className="w-full">
                       <motion.button

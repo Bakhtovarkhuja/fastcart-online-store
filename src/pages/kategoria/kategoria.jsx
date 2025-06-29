@@ -29,6 +29,7 @@ import api from '../../utils/utils'
 import { getKate } from '../../store/kategoria/reducer'
 import { get } from '../../store/categoria/reducer'
 import { AddCart } from '../../store/cart/reducer'
+import SuperModal from '../../components/modal/modal'
 
 export default function Kategoria() {
 	const wish = JSON.parse(localStorage.getItem('wish'))
@@ -41,23 +42,30 @@ export default function Kategoria() {
 	const token = localStorage.getItem('token')
 		const [modal, setModal] = useState(false)
 	
-		function handleAddToWishlitst(el) {
-			const wishlist = {
-				id: el.id,
-				image: el.image,
-				name: el.productName,
-				price: el.price,
-			}
-	
-			const currentWish = JSON.parse(localStorage.getItem('wish')) || []
-	
-			const isExist = currentWish.some(item => item.id === wishlist.id)
-	
-			if (!isExist) {
-				currentWish.push(wishlist)
-				localStorage.setItem('wish', JSON.stringify(currentWish))
-			}
+		const [wishUpdated, setWishUpdated] = useState(false)
+
+	function handleAddToWishlitst(el) {
+		const wishlist = {
+			id: el.id,
+			image: el.image,
+			name: el.productName,
+			price: el.price,
 		}
+
+		const currentWish = JSON.parse(localStorage.getItem('wish')) || []
+
+		const isExist = currentWish.some(item => item.id === wishlist.id)
+
+		if (!isExist) {
+			currentWish.push(wishlist)
+			localStorage.setItem('wish', JSON.stringify(currentWish))
+		} else {
+			const filtered = currentWish.filter(item => item.id !== wishlist.id)
+			localStorage.setItem('wish', JSON.stringify(filtered))
+		}
+
+		setWishUpdated(prev => !prev)
+	}
 	
 		function handleAddToCart(id) {
 			if (token) {
@@ -118,7 +126,7 @@ export default function Kategoria() {
 				</select>
 			</div>
 			<section className='w-[90%] m-auto md:w-[80%] flex flex-col gap-[15px] py-[30px] md:py-[60px] md:flex-row'>
-				<aside className='md:w-[20%]'>
+				<aside className='md:w-[25%]'>
 					<div className='flex flex-col gap-[15px] md:hidden'>
 						<div className='md:bg-[#F5F5F5] md:px-[15px] md:py-[7px] md:rounded-[12px] md:w-[300px] md:hidden border-1 border-[gray] px-[15px] py-[10px] rounded-[7px]'>
 							<input
@@ -406,64 +414,65 @@ export default function Kategoria() {
 						</Accordion>
 					</div>
 				</aside>
-				<aside className='flex flex-col gap-[40px] md:w-[80%]'>
-					<div className='w-full'>
-						<Swiper
-							spaceBetween={10}
-							slidesPerView={1}
-							breakpoints={{
-								768: {
-									slidesPerView: 3,
-									spaceBetween: 20,
-								},
-							}}
-						>
-							{product?.map(el => (
-								<SwiperSlide key={el.id} className='px-2'>
-									<div className='flex flex-col gap-[10px]'>
-										<div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative'>
-											<img
-												src={api + 'images/' + el.image}
-												alt=''
-												className='md:h-[180px]'
-											/>
-											<div
-												className='absolute flex justify-center items-center top-[10px] right-[10px] bg-[white] rounded-[50%] w-[35px] h-[35px] cursor-pointer'
-												onClick={() => handleAddToWishlitst(el)}
-											>
-												<img src={heart} className='' alt='' />
-											</div>
-											<Link to={`/product/${el.id}`}>
-												<img
-													src={info}
-													className='absolute top-[50px] right-[10px]'
-													alt=''
-												/>
-											</Link>
-											<button
-												onClick={() => handleAddToCart(el.id)}
-												className='cursor-pointer bg-black text-white w-full py-[10px]'
-											>
-												<ShoppingCartIcon /> Add To Cart
-											</button>
-										</div>
-										<b className='text-[23px]'>{el.productName}</b>
-										<p className='text-[#DB4444] text-[20px]'>
-											{'$ ' + el.price}
-										</p>
-										<img className='w-[30%]' src={starIcon} alt='' />
-									</div>
-								</SwiperSlide>
-							))}
-						</Swiper>
-					</div>
-					<div className='flex justify-center mt-[20px]'>
-						<button className='px-[25px] bg-[#DB4444] py-[10px] rounded-[7px] text-[white]'>
-							All Products
-						</button>
-					</div>
-				</aside>
+				<aside className='flex flex-col gap-[40px] md:w-[75%]'>
+	<div className='w-full flex flex-wrap gap-[20px]'>
+		{product?.map(el => {
+        const wish = JSON.parse(localStorage.getItem('wish')) || []
+        const isInWish = wish.some(item => item.id === el.id)
+        return (
+            <div className='flex flex-col gap-[10px] w-[32%]'>
+              <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
+                <img
+                  src={api + 'images/' + el.image}
+                  alt=''
+                  className='md:h-[180px] object-contain transition-transform duration-500 hover:scale-105'
+                />
+                <div
+                  className={`absolute top-[10px] right-[10px] w-[35px] h-[35px] rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 shadow-md hover:scale-110 ${
+                    isInWish ? 'bg-red-500' : 'bg-white'
+                  }`}
+                  onClick={() => handleAddToWishlitst(el)}
+                >
+                  <img src={heart} alt='' className='w-[18px]' />
+                </div>
+                <Link to={`/product/${el.id}`}>
+                  <img
+                    src={info}
+                    className='absolute top-[50px] right-[10px] hover:scale-110 transition-transform duration-300'
+                    alt=''
+                  />
+                </Link>
+                <button
+                  onClick={() => handleAddToCart(el.id)}
+                  className='cursor-pointer bg-black text-white w-full py-[10px] hover:bg-[#2d2b2b] transition duration-300 ease-in-out hover:scale-[1.02]'
+                >
+                  <ShoppingCartIcon /> Add To Cart
+                </button>
+              </div>
+              <b className='text-[23px]'>{el.productName}</b>
+              <p className='text-[#DB4444] text-[20px]'>$ {el.price}</p>
+              <img className='w-[30%]' src={starIcon} alt='' />
+            </div>
+        )
+      })}
+	</div>
+
+	<div className='flex justify-center mt-[20px]'>
+		<button className='px-[25px] bg-[#DB4444] py-[10px] rounded-[7px] text-white font-semibold shadow-md hover:bg-[#b83636] transition duration-300 hover:scale-105'>
+			All Products
+		</button>
+	</div>
+</aside>
+
 			</section>
+			{modal && (
+							<>
+								<SuperModal isOpen={modal} setIsOpen={setModal} />
+							  <button onClick={() => setModal(true)} className='bg-black text-white px-4 py-2 rounded-md'>
+					Открыть Модал
+				 </button>
+							</>
+						)}
 		</>
 	)
 }

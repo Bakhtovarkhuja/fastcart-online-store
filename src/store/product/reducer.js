@@ -46,6 +46,16 @@ export const categoriaById = createAsyncThunk('ProductSlice/categoriaById',
 		}
 	}
 )
+export const searchByName = createAsyncThunk('ProductSlice/searchByName',
+	async (value) => {
+		try {
+			const { data } = await axios.get(api + 'Product/get-products?ProductName=' + value)
+			return data.data.products
+		} catch (error) {
+			console.error(error);
+		}
+	}
+)
 
 export const ProductSlice = createSlice({
 	name: 'ProductSlice',
@@ -70,6 +80,10 @@ export const ProductSlice = createSlice({
 		.addCase(categoriaById.fulfilled, (state, action) => {
 			state.product = []
 			state.product = action.payload
+		})
+		.addCase(searchByName.fulfilled, (state, action) => {
+			state.product = []
+			state.product =  action.payload
 		})
 	}
 })
