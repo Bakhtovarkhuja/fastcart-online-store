@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router'
-import { categoriaById, getProduct } from '../../store/product/reducer'
+import { categoriaById, getProduct, subCategoriaById } from '../../store/product/reducer'
 import { get } from '../../store/categoria/reducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
@@ -23,6 +23,7 @@ export default function BrandCategoriaById() {
 	const token = localStorage.getItem('token')
 	const [modal, setModal] = useState(false)
 	const { brandAndCate } = useSelector(state => state.brand)
+		const [wishUpdated, setWishUpdated] = useState(false)
 
 	function handleAddToWishlitst(el) {
 		const wishlist = {
@@ -39,7 +40,12 @@ export default function BrandCategoriaById() {
 		if (!isExist) {
 			currentWish.push(wishlist)
 			localStorage.setItem('wish', JSON.stringify(currentWish))
+		} else {
+			const filtered = currentWish.filter(item => item.id !== wishlist.id)
+			localStorage.setItem('wish', JSON.stringify(filtered))
 		}
+
+		setWishUpdated(prev => !prev)
 	}
 
 	function handleAddToCart(id) {
@@ -71,11 +77,12 @@ export default function BrandCategoriaById() {
 				<aside className='flex flex-wrap gap-[10px]'>
 					{brandAndCate?.subCategories?.map(el => (
 						<div key={el.id}>
-							<p className='bg-[#F5F5F5] py-[7px] px-[10px] rounded-[7px] cursor-pointer'>
+							<p className='bg-[#F5F5F5] border-2 border-[#F5F5F5] py-[7px] px-[10px] rounded-[7px] cursor-pointer' onClick={() => dispatch(subCategoriaById(el.id))}>
 								{el.subCategoryName}
 							</p>
 						</div>
 					))}
+					<button className='px-[20px] py-[7px] text-[#DB4444] hover:text-[white] hover:bg-[#DB4444] rounded-[7px] border-2 border-[#DB4444]' onClick={() => dispatch(categoriaById(id))}>See All</button>
 				</aside>
 				<div>
 					{!product && (

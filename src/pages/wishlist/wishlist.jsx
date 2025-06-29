@@ -54,7 +54,6 @@ function handleAddToCart(id) {
 		setWishlist(updatedWish)
 	}
 
-
 		function handleDelWishlist(id) {
 		const updatedWish = wishlist.filter(el => el.id !== id)
 		localStorage.setItem('wish', JSON.stringify(updatedWish))

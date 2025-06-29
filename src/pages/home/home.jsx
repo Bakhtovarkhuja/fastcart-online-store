@@ -38,6 +38,36 @@ export default function Home() {
 	const token = localStorage.getItem('token')
 	const [modal, setModal] = useState(false)
 	const [wishUpdated, setWishUpdated] = useState(false)
+  const calculateTimeLeft = () => {
+    const targetDate = new Date('2025-07-01T00:00:00'); 
+    const now = new Date();
+    const difference = targetDate - now;
+
+    let timeLeft = {
+      days: '00',
+      hours: '00',
+      minutes: '00',
+      seconds: '00',
+    };
+     if (difference > 0) {
+      timeLeft = {
+        days: String(Math.floor(difference / (1000 * 60 * 60 * 24))).padStart(2, '0'),
+        hours: String(Math.floor((difference / (1000 * 60 * 60)) % 24)).padStart(2, '0'),
+        minutes: String(Math.floor((difference / 1000 / 60) % 60)).padStart(2, '0'),
+        seconds: String(Math.floor((difference / 1000) % 60)).padStart(2, '0'),
+      };
+    }
+      return timeLeft;
+  };
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
 	function handleAddToWishlitst(el) {
 		const wishlist = {
@@ -166,10 +196,30 @@ export default function Home() {
     <b className='text-[#DB4444] text-[25px]'>Today’s</b>
   </div>
 
-  <div className='flex flex-col gap-[10px] md:flex-row md:gap-[30px] items-center'>
-    <b className='text-[28px]'>Flash Sales</b>
-    <img src={clock} alt='' />
-  </div>
+  <section className='flex flex-col gap-[10px] md:flex-row md:gap-[30px] items-center'>
+      <b className='text-[28px]'>Flash Sales</b>
+      <div className='flex justify-around items-center text-[44px] gap-[16px] md:ml-[50px]'>
+        <div className='text-center'>
+          <h1 className='text-[17px]'>Days</h1>
+          <h1>{timeLeft.days}</h1>
+        </div>
+        <h1>:</h1>
+        <div className='text-center'>
+          <h1 className='text-[17px]'>Hours</h1>
+          <h1>{timeLeft.hours}</h1>
+        </div>
+        <h1>:</h1>
+        <div className='text-center'>
+          <h1 className='text-[17px]'>Minutes</h1>
+          <h1>{timeLeft.minutes}</h1>
+        </div>
+        <h1>:</h1>
+        <div className='text-center'>
+          <h1 className='text-[17px]'>Seconds</h1>
+          <h1>{timeLeft.seconds}</h1>
+        </div>
+      </div>
+    </section>
 
   <div className='w-full'>
     <Swiper
@@ -363,7 +413,7 @@ export default function Home() {
         const wish = JSON.parse(localStorage.getItem('wish')) || []
         const isInWish = wish.some(item => item.id === el.id)
         return (
-            <div className='flex flex-col gap-[10px] w-[23.5%]'>
+            <div className='flex flex-col gap-[10px] w-[100%] md:w-[23.5%]'>
               <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
                 <img
                   src={api + 'images/' + el.image}

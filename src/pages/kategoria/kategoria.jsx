@@ -150,269 +150,170 @@ export default function Kategoria() {
 						</div>
 					</div>
 					<div className='md:block hidden md:w-[100%]'>
-						<Accordion>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls='panel1-content'
-								id='panel1-header'
-							>
-								<Typography component='span'>Category</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								{data?.map(el => (
-									<div key={el.id} className='flex gap-[5px]'>
-										<input
-											type='checkbox'
-											className='accent-[#DB4444]'
-											onChange={() => dispatch(categoriaById(el?.id))}
-										/>
-										<p>{el?.categoryName}</p>
-									</div>
-								))}
-							</AccordionDetails>
-							<AccordionDetails>
-								<b
-									onClick={() => dispatch(getProduct())}
-									className='text-[#DB4444]'
-								>
-									See All
-								</b>
-							</AccordionDetails>
-						</Accordion>
-						<Accordion>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls='panel1-content'
-								id='panel1-header'
-							>
-								<Typography component='span'>Brands</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								{kategoria?.map(el => (
-									<div key={el.id} className='flex gap-[10px]'>
-										<input
-											type='checkbox'
-											className='accent-[#DB4444] w-[17px] h-[25px]'
-											onChange={() => dispatch(brandById(el?.id))}
-										/>
-										<p>{el?.brandName}</p>
-									</div>
-								))}
-							</AccordionDetails>
-							<AccordionDetails>
-								<b
-									onClick={() => dispatch(getProduct())}
-									className='text-[#DB4444]'
-								>
-									See All
-								</b>
-							</AccordionDetails>
-						</Accordion>
-						<Accordion>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls='panel1-content'
-								id='panel1-header'
-							>
-								<Typography component='span'>Features</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Metallic</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Plastic cover</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>8GB Ram</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Super power</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Large Memory</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails className='text-[#DB4444]'>
-								See all
-							</AccordionDetails>
-						</Accordion>
-						<Accordion>
-							<AccordionSummary>
-								<Typography>Price range</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<div className='flex mt-[-15px] mb-[15px]'>
-									<input
-										type='range'
-										min='0'
-										max='999999'
-										value={value[0]}
-										onChange={e => handleRangeChange(0, e.target.value)}
-										className='accent-red-500 w-[50%]'
-									/>
-									<input
-										type='range'
-										min='0'
-										max='999999'
-										value={value1[1]}
-										onChange={e => handleRangeChange1(1, e.target.value)}
-										className='accent-red-500 w-[50%]'
-									/>
-								</div>
-								<div
-									style={{ display: 'flex', gap: '10px', marginBottom: '16px' }}
-								>
-									<TextField
-										label='Min'
-										type='number'
-										value={value[0]}
-										onChange={e => handleInputChange(0, e.target.value)}
-										size='small'
-										fullWidth
-									/>
-									<TextField
-										label='Max'
-										type='number'
-										value={value1[1]}
-										onChange={e => handleInputChange1(1, e.target.value)}
-										size='small'
-										fullWidth
-									/>
-								</div>
-								<Button
-									variant='outlined'
-									fullWidth
-									sx={{ borderColor: 'red', color: 'red' }}
-									onClick={handleApply}
-								>
-									Apply
-								</Button>
-							</AccordionDetails>
-						</Accordion>
-						<Accordion>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls='panel1-content'
-								id='panel1-header'
-							>
-								<Typography component='span'>Condition</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='radio'
-										name='redio'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Any</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='radio'
-										name='redio'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Refurbished</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='radio'
-										name='redio'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Brand new</p>
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='radio'
-										name='redio'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<p>Old items</p>
-								</div>
-							</AccordionDetails>
-						</Accordion>
-						<Accordion>
-							<AccordionSummary
-								expandIcon={<ExpandMoreIcon />}
-								aria-controls='panel1-content'
-								id='panel1-header'
-							>
-								<Typography component='span'>Ratings</Typography>
-							</AccordionSummary>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<img src={five} alt='' />
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<img src={four} alt='' />
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<img src={tree} alt='' />
-								</div>
-							</AccordionDetails>
-							<AccordionDetails>
-								<div className='flex gap-[10px]'>
-									<input
-										type='checkbox'
-										className='accent-[#DB4444] w-[17px] h-[25px]'
-									/>
-									<img src={two} alt='' />
-								</div>
-							</AccordionDetails>
-						</Accordion>
-					</div>
+  <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography component='span'>Category</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      {data?.map(el => (
+        <label
+          key={el.id}
+          className='flex gap-[5px] items-center cursor-pointer hover:text-red-500 transition-all'
+        >
+          <input
+            type='checkbox'
+            className='accent-[#DB4444] cursor-pointer'
+            onChange={() => dispatch(categoriaById(el?.id))}
+          />
+          <p>{el?.categoryName}</p>
+        </label>
+      ))}
+    </AccordionDetails>
+    <AccordionDetails>
+      <b
+        onClick={() => dispatch(getProduct())}
+        className='text-[#DB4444] cursor-pointer hover:underline transition-all flex items-center gap-1'
+      >
+        See All <span>→</span>
+      </b>
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography component='span'>Brands</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      {kategoria?.map(el => (
+        <label
+          key={el.id}
+          className='flex gap-[10px] items-center cursor-pointer hover:text-red-500 transition-all'
+        >
+          <input
+            type='checkbox'
+            className='accent-[#DB4444] w-[17px] h-[25px] cursor-pointer'
+            onChange={() => dispatch(brandById(el?.id))}
+          />
+          <p>{el?.brandName}</p>
+        </label>
+      ))}
+    </AccordionDetails>
+    <AccordionDetails>
+      <b
+        onClick={() => dispatch(getProduct())}
+        className='text-[#DB4444] cursor-pointer hover:underline transition-all flex items-center gap-1'
+      >
+        See All <span>→</span>
+      </b>
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography component='span'>Features</Typography>
+    </AccordionSummary>
+    {['Metallic', 'Plastic cover', '8GB Ram', 'Super power', 'Large Memory'].map((feature, i) => (
+      <AccordionDetails key={i}>
+        <label className='flex gap-[10px] items-center cursor-pointer hover:text-red-500 transition-all'>
+          <input
+            type='checkbox'
+            className='accent-[#DB4444] w-[17px] h-[25px] cursor-pointer'
+          />
+          <p>{feature}</p>
+        </label>
+      </AccordionDetails>
+    ))}
+    <AccordionDetails className='text-[#DB4444] cursor-pointer hover:underline'>See all</AccordionDetails>
+  </Accordion>
+
+  <Accordion>
+    <AccordionSummary>
+      <Typography>Price range</Typography>
+    </AccordionSummary>
+    <AccordionDetails>
+      <div className='flex mt-[-15px] mb-[15px]'>
+        <input
+          type='range'
+          min='0'
+          max='999999'
+          value={value[0]}
+          onChange={e => handleRangeChange(0, e.target.value)}
+          className='accent-red-500 w-[50%] cursor-pointer'
+        />
+        <input
+          type='range'
+          min='0'
+          max='999999'
+          value={value1[1]}
+          onChange={e => handleRangeChange1(1, e.target.value)}
+          className='accent-red-500 w-[50%] cursor-pointer'
+        />
+      </div>
+      <div className='flex gap-[10px] mb-[16px]'>
+        <TextField
+          label='Min'
+          type='number'
+          value={value[0]}
+          onChange={e => handleInputChange(0, e.target.value)}
+          size='small'
+          fullWidth
+        />
+        <TextField
+          label='Max'
+          type='number'
+          value={value1[1]}
+          onChange={e => handleInputChange1(1, e.target.value)}
+          size='small'
+          fullWidth
+        />
+      </div>
+      <Button
+        variant='outlined'
+        fullWidth
+        sx={{ borderColor: 'red', color: 'red' }}
+        onClick={handleApply}
+      >
+        Apply
+      </Button>
+    </AccordionDetails>
+  </Accordion>
+
+  <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography component='span'>Condition</Typography>
+    </AccordionSummary>
+    {['Any', 'Refurbished', 'Brand new', 'Old items'].map((cond, i) => (
+      <AccordionDetails key={i}>
+        <label className='flex gap-[10px] items-center cursor-pointer hover:text-red-500 transition-all'>
+          <input
+            type='radio'
+            name='radio'
+            className='accent-[#DB4444] w-[17px] h-[25px] cursor-pointer'
+          />
+          <p>{cond}</p>
+        </label>
+      </AccordionDetails>
+    ))}
+  </Accordion>
+
+  <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography component='span'>Ratings</Typography>
+    </AccordionSummary>
+    {[five, four, tree, two].map((imgSrc, i) => (
+      <AccordionDetails key={i}>
+        <label className='flex gap-[10px] items-center cursor-pointer hover:text-red-500 transition-all'>
+          <input
+            type='checkbox'
+            className='accent-[#DB4444] w-[17px] h-[25px] cursor-pointer'
+          />
+          <img src={imgSrc} alt='' />
+        </label>
+      </AccordionDetails>
+    ))}
+  </Accordion>
+</div>
+
 				</aside>
 				<aside className='flex flex-col gap-[40px] md:w-[75%]'>
 	<div className='w-full flex flex-wrap gap-[20px]'>
@@ -420,7 +321,7 @@ export default function Kategoria() {
         const wish = JSON.parse(localStorage.getItem('wish')) || []
         const isInWish = wish.some(item => item.id === el.id)
         return (
-            <div className='flex flex-col gap-[10px] w-[32%]'>
+            <div className='flex flex-col gap-[10px] w-[100%] md:w-[32%]'>
               <div className='bg-[#F5F5F5] flex flex-col gap-[20px] items-center pt-[20px] relative rounded-[10px] hover:shadow-xl hover:scale-[1.02] transition duration-300 ease-in-out'>
                 <img
                   src={api + 'images/' + el.image}
